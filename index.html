@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic RAG · Smart Tourism · Chiang Mai</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Space+Mono:wght@400;700&family=Noto+Serif+Thai:wght@300;400;600&display=swap" rel="stylesheet">
+<!-- Leaflet for interactive map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --ink:#2A2620;
+  --paper:#FDFAF5;
+  --gold:#F4A261;
+  --gold2:#FFD4B2;
+  --saffron:#E76F51;
+  --jade:#4A7C59;
+  --jade2:#7FAF8A;
+  --red:#c0392b;
+  --smoke:#F5EFE2;
+  --mist:#FDFAF5;
+  --very-high:#c0392b;
+  --high:#e07b39;
+  --medium:#c8972a;
+  --low:#2d6a4f;
+  /* ── Presentation palette ── */
+  --cream:#FDFAF5;
+  --cream-dark:#F5EFE2;
+  --peach:#FFD4B2;
+  --peach-mid:#F4A261;
+  --peach-deep:#E76F51;
+  --sage:#C3D9C8;
+  --sage-mid:#7FAF8A;
+  --sage-deep:#4A7C59;
+  --butter:#FFE8A3;
+  --lavender:#D6CCF0;
+  --sky:#B8D8E8;
+  --coral:#FFB5A7;
+  --char:#2A2620;
+  --char-mid:#5C5348;
+  --char-soft:#8B7D72;
+  --gold-accessible:#A85200;
+  --r-xs:12px;--r-sm:18px;--r-md:24px;--r-lg:32px;--r-xl:48px;--r-full:999px;
+  --shadow-sm:0 2px 8px rgba(42,38,32,.06);
+  --shadow-md:0 8px 32px rgba(42,38,32,.10);
+  --shadow-lg:0 20px 60px rgba(42,38,32,.14);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-smooth:cubic-bezier(.25,.46,.45,.94);
+  --ease-expo:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── custom cursor ── */
+#cursor{position:fixed;width:12px;height:12px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transition:transform .15s ease,opacity .2s;mix-blend-mode:multiply;}
+#cursor-ring{position:fixed;width:40px;height:40px;border:1.5px solid var(--gold);border-radius:50%;pointer-events:none;z-index:9998;transition:all .25s ease;mix-blend-mode:multiply;}
+
+/* ── scroll sections ── */
+section{
+  min-height:100vh;
+  scroll-snap-align:start;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+/* ══════════════════════════════════════════
+   Section 0 — Hero
+══════════════════════════════════════════ */
+#hero{
+  background:var(--ink);
+  flex-direction:column;
+  text-align:center;
+}
+.hero-noise{
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
+  pointer-events:none;opacity:.4;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(244,162,97,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244,162,97,.07) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation:gridDrift 20s linear infinite;
+}
+@keyframes gridDrift{from{background-position:0 0;}to{background-position:60px 60px;}}
+
+.hero-orb{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  pointer-events:none;
+  animation:orbFloat 8s ease-in-out infinite;
+}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,rgba(244,162,97,.22),transparent 70%);top:-100px;right:-100px;}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,rgba(224,123,57,.18),transparent 70%);bottom:-80px;left:-80px;animation-delay:-4s;}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(20px,-20px) scale(1.05);}}
+
+.hero-inner{position:relative;z-index:2;padding:2rem;}
+.hero-eyebrow{
+  font-family:'Inter',sans-serif;
+  font-size:.65rem;letter-spacing:.35em;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:2rem;
+  opacity:0;animation:fadeUp .8s .2s forwards;
+}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(3rem,8vw,7rem);
+  font-weight:900;
+  color:#FDFAF5;
+  line-height:.95;
+  margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp .9s .4s forwards;
+}
+.hero-title em{
+  display:block;
+  font-style:italic;
+  color:var(--gold);
+  text-shadow:0 0 60px rgba(244,162,97,.4);
+}
+.hero-title span{
+  display:block;
+  font-size:clamp(1.2rem,3vw,2.4rem);
+  font-weight:400;
+  color:rgba(253,250,245,.5);
+  letter-spacing:.05em;
+  margin-top:.5rem;
+}
+.hero-sub{
+  font-family:'Inter',sans-serif;
+  font-size:.78rem;
+  color:rgba(253,250,245,.45);
+  letter-spacing:.1em;
+  margin-bottom:3rem;
+  opacity:0;animation:fadeUp .8s .6s forwards;
+}
+.hero-pills{
+  display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  opacity:0;animation:fadeUp .8s .8s forwards;
+}
+.pill{
+  padding:.5rem 1.2rem;
+  border:1px solid rgba(244,162,97,.4);
+  border-radius:100px;
+  font-size:.65rem;
+  letter-spacing:.15em;
+  color:var(--gold2);
+  text-transform:uppercase;
+  backdrop-filter:blur(8px);
+}
+.hero-scroll{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  opacity:0;animation:fadeUp .8s 1.2s forwards;
+}
+.hero-scroll span{font-size:.58rem;letter-spacing:.3em;color:rgba(253,250,245,.3);text-transform:uppercase;}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{opacity:.3;transform:scaleY(.8);}50%{opacity:1;transform:scaleY(1);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+
+/* ══════════════════════════════════════════
+   Section 1 — Problem
+══════════════════════════════════════════ */
+#problem{
+  background:var(--mist);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+.section-label{
+  font-family:'Inter',sans-serif;
+  font-size:.6rem;letter-spacing:.4em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:1.2rem;
+}
+.problem-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:4rem;
+  max-width:1100px;
+  width:100%;
+  align-items:center;
+}
+@media(max-width:768px){.problem-layout{grid-template-columns:1fr;gap:2rem;}}
+.problem-text h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:900;
+  line-height:1.1;
+  margin-bottom:1.5rem;
+  color:var(--ink);
+}
+.problem-text h2 em{font-style:italic;color:var(--saffron);}
+.problem-text p{
+  font-size:.82rem;line-height:1.9;
+  color:#444;margin-bottom:1rem;
+}
+.stat-stack{display:flex;flex-direction:column;gap:1.2rem;}
+.stat-card{
+  background:white;
+  border-radius:16px;
+  padding:1.5rem 2rem;
+  border-left:4px solid;
+  box-shadow:0 4px 24px rgba(0,0,0,.06);
+  transition:transform .3s ease,box-shadow .3s ease;
+  cursor:default;
+}
+.stat-card:hover{transform:translateX(8px);box-shadow:0 8px 40px rgba(0,0,0,.12);}
+.stat-card.very-high{border-color:var(--very-high);}
+.stat-card.high{border-color:var(--high);}
+.stat-card.medium{border-color:var(--medium);}
+.stat-card.low{border-color:var(--jade);}
+.stat-card .num{
+  font-size:2.5rem;font-weight:700;
+  font-family:'Playfair Display',serif;
+  line-height:1;
+}
+.stat-card.very-high .num{color:var(--very-high);}
+.stat-card.high .num{color:var(--high);}
+.stat-card.medium .num{color:var(--medium);}
+.stat-card.low .num{color:var(--jade);}
+.stat-card .label{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#888;margin-top:.3rem;}
+.stat-card .desc{font-size:.75rem;color:#555;margin-top:.5rem;line-height:1.6;}
+
+/* ══════════════════════════════════════════
+   Section 2 — System pipeline
+══════════════════════════════════════════ */
+#pipeline{
+  background:var(--ink);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#pipeline .section-label{color:var(--gold);}
+#pipeline h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3rem);
+  color:#FDFAF5;
+  font-weight:900;
+  text-align:center;
+  margin-bottom:.5rem;
+}
+#pipeline .sub{
+  text-align:center;font-size:.75rem;
+  color:rgba(253,250,245,.4);letter-spacing:.08em;
+  margin-bottom:3rem;
+}
+.pipeline-flow{
+  display:flex;
+  align-items:stretch;
+  gap:0;
+  max-width:1100px;
+  width:100%;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.pipe-step{
+  flex:1;min-width:160px;max-width:220px;
+  position:relative;
+  padding:2rem 1.5rem 2rem;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .3s ease;
+}
+.pipe-step:hover{transform:translateY(-8px);}
+.pipe-step::after{
+  content:'→';
+  position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+  color:var(--gold);font-size:1.2rem;
+  z-index:2;
+}
+.pipe-step:last-child::after{display:none;}
+.pipe-icon{
+  width:64px;height:64px;
+  background:rgba(244,162,97,.12);
+  border:1.5px solid rgba(244,162,97,.3);
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;margin:0 auto 1rem;
+  transition:all .3s ease;
+  color:var(--gold);
+}
+.pipe-icon svg{width:32px;height:32px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;}
+.pipe-step:hover .pipe-icon{
+  background:rgba(244,162,97,.25);
+  border-color:var(--gold);
+  box-shadow:0 0 30px rgba(244,162,97,.3);
+}
+.icon{display:inline-flex;align-items:center;vertical-align:middle;line-height:1;}
+.icon svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.pipe-step h3{
+  font-family:'Playfair Display',serif;
+  font-size:1rem;color:#FDFAF5;
+  margin-bottom:.5rem;font-style:italic;
+}
+.pipe-step p{font-size:.65rem;color:rgba(253,250,245,.45);line-height:1.7;}
+.pipe-tag{
+  display:inline-block;
+  margin-top:.8rem;
+  padding:.25rem .7rem;
+  border-radius:100px;
+  font-size:.55rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  background:rgba(244,162,97,.15);
+  color:var(--gold2);
+  border:1px solid rgba(244,162,97,.2);
+}
+.pipe-step.active-step .pipe-icon{
+  background:var(--gold);
+  border-color:var(--gold);
+  animation:pipePulse 2s ease-in-out infinite;
+  color:white;
+}
+@keyframes pipePulse{0%,100%{box-shadow:0 0 0 0 rgba(244,162,97,.4);}50%{box-shadow:0 0 0 16px rgba(244,162,97,0);}}
+
+/* ══════════════════════════════════════════
+   Section 3 — POI Density
+══════════════════════════════════════════ */
+#density{
+  background:var(--smoke);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#density h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:900;
+  text-align:center;
+  margin-bottom:.5rem;
+}
+#density h2 em{font-style:italic;color:var(--saffron);}
+#density .sub{
+  text-align:center;font-size:.75rem;
+  color:#888;letter-spacing:.08em;margin-bottom:2.5rem;
+}
+.filter-row{
+  display:flex;gap:.6rem;flex-wrap:wrap;
+  justify-content:center;margin-bottom:2rem;
+}
+.filter-btn{
+  padding:.4rem 1rem;
+  border-radius:100px;
+  border:1.5px solid;
+  font-size:.62rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all .25s ease;
+  font-family:'Inter',sans-serif;
+  background:transparent;
+}
+.filter-btn.all{border-color:var(--ink);color:var(--ink);}
+.filter-btn.all.active,.filter-btn.all:hover{background:var(--ink);color:white;}
+.filter-btn.very_high{border-color:var(--very-high);color:var(--very-high);}
+.filter-btn.very_high.active,.filter-btn.very_high:hover{background:var(--very-high);color:white;}
+.filter-btn.high{border-color:var(--high);color:var(--high);}
+.filter-btn.high.active,.filter-btn.high:hover{background:var(--high);color:white;}
+.filter-btn.medium{border-color:var(--medium);color:var(--medium);}
+.filter-btn.medium.active,.filter-btn.medium:hover{background:var(--medium);color:white;}
+.filter-btn.low{border-color:var(--jade);color:var(--jade);}
+.filter-btn.low.active,.filter-btn.low:hover{background:var(--jade);color:white;}
+
+.poi-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:1rem;
+  max-width:1100px;
+  width:100%;
+  max-height:520px;
+  overflow-y:auto;
+  padding-right:.5rem;
+}
+.poi-grid::-webkit-scrollbar{width:4px;}
+.poi-grid::-webkit-scrollbar-track{background:transparent;}
+.poi-grid::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
+
+.poi-card{
+  background:white;
+  border-radius:16px;
+  padding:1.4rem;
+  cursor:pointer;
+  transition:all .3s ease;
+  border:1.5px solid transparent;
+  position:relative;
+  overflow:hidden;
+}
+.poi-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+}
+.poi-card.very_high::before{background:var(--very-high);}
+.poi-card.high::before{background:var(--high);}
+.poi-card.medium::before{background:var(--medium);}
+.poi-card.low::before{background:var(--jade);}
+.poi-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 48px rgba(0,0,0,.12);
+  border-color:rgba(244,162,97,.3);
+}
+.poi-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.8rem;}
+.poi-name{
+  font-family:'Playfair Display',serif;
+  font-size:1rem;font-weight:700;
+  line-height:1.2;flex:1;
+}
+.risk-badge{
+  padding:.2rem .6rem;
+  border-radius:100px;
+  font-size:.55rem;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  font-weight:700;
+  white-space:nowrap;
+  margin-left:.5rem;
+}
+.risk-badge.very_high{background:#fde8e6;color:var(--very-high);}
+.risk-badge.high{background:#fdf0e6;color:var(--high);}
+.risk-badge.medium{background:#fdf8e6;color:#a07820;}
+.risk-badge.low{background:#e8f5ee;color:var(--jade);}
+.poi-category{font-size:.6rem;color:#999;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;}
+.density-bar-wrap{margin-bottom:.6rem;}
+.density-label{display:flex;justify-content:space-between;font-size:.62rem;margin-bottom:.3rem;}
+.density-label span:first-child{color:#666;}
+.density-label span:last-child{font-weight:700;}
+.density-bar{height:6px;background:#eee;border-radius:3px;overflow:hidden;}
+.density-fill{height:100%;border-radius:3px;transition:width 1s ease;position:relative;}
+.density-fill::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:30%;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.4));
+}
+.poi-card.very_high .density-fill{background:linear-gradient(90deg,var(--very-high),#e74c3c);}
+.poi-card.high .density-fill{background:linear-gradient(90deg,var(--high),var(--saffron));}
+.poi-card.medium .density-fill{background:linear-gradient(90deg,var(--medium),var(--gold2));}
+.poi-card.low .density-fill{background:linear-gradient(90deg,var(--jade),var(--jade2));}
+.poi-meta{display:flex;gap:.8rem;font-size:.62rem;color:#888;}
+.poi-meta span{display:flex;align-items:center;gap:.3rem;}
+
+/* ══════════════════════════════════════════
+   Section 3.5 — Interactive Map (new)
+══════════════════════════════════════════ */
+#map-section{
+  background:var(--paper);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#map-section h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:900;
+  text-align:center;
+  margin-bottom:.5rem;
+}
+#map-section h2 em{font-style:italic;color:var(--saffron);}
+#map-section .sub{
+  text-align:center;font-size:.75rem;
+  color:#888;letter-spacing:.08em;margin-bottom:2.5rem;
+}
+.map-layout{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:2rem;
+  max-width:1200px;
+  width:100%;
+  align-items:start;
+}
+@media(max-width:900px){
+  .map-layout{grid-template-columns:1fr;}
+}
+#poi-map{
+  width:100%;
+  height:500px;
+  border-radius:24px;
+  box-shadow:0 20px 40px rgba(0,0,0,.1);
+  border:1px solid rgba(244,162,97,.2);
+  overflow:hidden;
+  z-index:1;
+}
+.map-sidebar{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+.map-legend{
+  background:white;
+  border-radius:20px;
+  padding:1.5rem;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+}
+.map-legend-title{
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:1rem;
+}
+.legend-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:.75rem;
+  color:#555;
+  margin-bottom:10px;
+}
+.legend-dot-circle{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.map-poi-list{
+  background:white;
+  border-radius:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+  overflow:hidden;
+}
+.map-poi-list-header{
+  padding:1rem 1.2rem;
+  background:var(--gold);
+  color:white;
+  font-size:.7rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.map-poi-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 16px;
+  border-bottom:1px solid #eee;
+  cursor:pointer;
+  transition:all .2s ease;
+}
+.map-poi-row:hover{
+  background:rgba(244,162,97,.08);
+}
+.map-poi-row:last-child{border-bottom:none;}
+.poi-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.poi-name-th{
+  font-size:.8rem;
+  font-weight:700;
+  color:var(--ink);
+}
+.poi-name-en{
+  font-size:.65rem;
+  color:#999;
+}
+.poi-density{
+  font-size:.8rem;
+  font-weight:800;
+  color:var(--gold);
+  margin-left:auto;
+}
+.map-time-badge{
+  background:white;
+  border-radius:20px;
+  padding:1rem 1.2rem;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+  font-size:.7rem;
+  color:#666;
+  line-height:1.6;
+}
+.map-time-badge strong{color:var(--saffron);}
+.poi-preview-section{
+  margin-top:2rem;
+  border-top:1px solid rgba(0,0,0,.08);
+  padding-top:1.5rem;
+  display:none;
+}
+.poi-preview-section.active{display:block;}
+.poi-preview-eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:.6rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:.5rem;
+}
+.poi-preview-eyebrow::before{
+  content:'';
+  width:16px;
+  height:2px;
+  background:var(--gold);
+  border-radius:2px;
+}
+.poi-preview-title{
+  font-size:1rem;
+  font-weight:800;
+  color:var(--ink);
+}
+.poi-preview-title-en{
+  font-size:.7rem;
+  color:#888;
+  margin-bottom:.8rem;
+}
+.poi-preview-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.poi-preview-img-wrap{
+  border-radius:16px;
+  overflow:hidden;
+  aspect-ratio:16/10;
+  background:#ddd;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  transition:transform .3s ease;
+}
+.poi-preview-img-wrap:hover{transform:translateY(-4px);}
+.poi-preview-img-wrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.poi-preview-img-label{
+  display:none;
+}
+@media(max-width:600px){
+  .poi-preview-grid{grid-template-columns:1fr;}
+}
+.leaflet-popup-content-wrapper{
+  border-radius:16px !important;
+  box-shadow:0 8px 32px rgba(0,0,0,.15) !important;
+}
+.leaflet-popup-tip{display:none;}
+/* ── North Arrow ── */
+.leaflet-control-north-arrow{
+  background:transparent;
+  border-radius:50%;
+  width:44px;height:44px;
+  box-shadow:0 4px 16px rgba(42,38,32,.18);
+  display:flex;align-items:center;justify-content:center;
+  cursor:default;
+}
+.leaflet-control-north-arrow svg{display:block;border-radius:50%;}
+
+/* ── Scale Bar overrides ── */
+.leaflet-control-scale-line{
+  border:2px solid var(--gold) !important;
+  border-top:none !important;
+  background:rgba(253,250,245,.92) !important;
+  color:var(--ink) !important;
+  font-family:'Inter',sans-serif !important;
+  font-size:.62rem !important;
+  font-weight:600 !important;
+  letter-spacing:.05em !important;
+  padding:2px 6px !important;
+  border-radius:0 0 6px 6px !important;
+  box-shadow:0 2px 8px rgba(42,38,32,.12) !important;
+}
+
+.poi-popup{padding:12px 16px;min-width:200px;}
+.poi-popup-name{font-size:.9rem;font-weight:800;color:var(--ink);margin-bottom:2px;}
+.poi-popup-en{font-size:.7rem;color:#888;margin-bottom:10px;}
+.poi-popup-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.poi-popup-stat{background:#FDFAF5;border-radius:12px;padding:8px 10px;text-align:center;}
+.poi-popup-val{font-size:1rem;font-weight:800;color:var(--ink);}
+.poi-popup-lbl{font-size:.6rem;color:#888;text-transform:uppercase;letter-spacing:.05em;}
+
+/* ══════════════════════════════════════════
+   Section 4 — Sentiment & RAG results
+══════════════════════════════════════════ */
+#sentiment{
+  background:var(--ink);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#sentiment .section-label{color:var(--gold);}
+#sentiment h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3rem);
+  color:#FDFAF5;font-weight:900;
+  text-align:center;margin-bottom:.5rem;
+}
+#sentiment .sub{
+  text-align:center;font-size:.75rem;
+  color:rgba(253,250,245,.4);letter-spacing:.08em;
+  margin-bottom:3rem;
+}
+.sent-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3rem;
+  max-width:1100px;
+  width:100%;
+}
+@media(max-width:768px){.sent-layout{grid-template-columns:1fr;}}
+.sent-left h3{
+  font-family:'Playfair Display',serif;
+  color:#FDFAF5;font-style:italic;
+  font-size:1.3rem;margin-bottom:1.5rem;
+}
+.donut-wrap{
+  position:relative;width:220px;height:220px;margin:0 auto 1.5rem;
+}
+.donut-wrap svg{width:100%;height:100%;}
+.donut-center{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+.donut-num{
+  font-family:'Playfair Display',serif;
+  font-size:2.5rem;font-weight:900;
+  color:var(--jade2);line-height:1;
+}
+.donut-lbl{font-size:.6rem;color:rgba(253,250,245,.4);letter-spacing:.15em;text-transform:uppercase;}
+.legend-row{display:flex;align-items:center;gap:.8rem;margin-bottom:.7rem;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.legend-text{font-size:.72rem;color:rgba(253,250,245,.7);flex:1;}
+.legend-pct{font-size:.72rem;font-weight:700;color:#FDFAF5;}
+
+.sent-right h3{
+  font-family:'Playfair Display',serif;
+  color:#FDFAF5;font-style:italic;
+  font-size:1.3rem;margin-bottom:1.5rem;
+}
+.poi-sentiment-list{display:flex;flex-direction:column;gap:.8rem;}
+.poi-sent-item{
+  background:rgba(255,255,255,.05);
+  border-radius:12px;
+  padding:1rem 1.2rem;
+  border:1px solid rgba(255,255,255,.06);
+  transition:all .3s ease;cursor:default;
+}
+.poi-sent-item:hover{background:rgba(255,255,255,.09);border-color:rgba(244,162,97,.3);}
+.poi-sent-name{
+  font-size:.8rem;color:#FDFAF5;
+  font-weight:700;margin-bottom:.6rem;
+}
+.mini-bars{display:flex;gap:.3rem;height:8px;border-radius:4px;overflow:hidden;}
+.mini-bar-pos{background:var(--jade2);}
+.mini-bar-neu{background:var(--gold);}
+.mini-bar-neg{background:var(--red);}
+.mini-pcts{display:flex;gap:1rem;margin-top:.4rem;font-size:.6rem;}
+.pct-pos{color:var(--jade2);}
+.pct-neu{color:var(--gold2);}
+.pct-neg{color:#e74c3c;}
+
+/* ══════════════════════════════════════════
+   Section 5 — Evaluation metrics
+══════════════════════════════════════════ */
+#metrics{
+  background:var(--paper);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#metrics h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:900;text-align:center;margin-bottom:.5rem;
+}
+#metrics h2 em{font-style:italic;color:var(--jade);}
+#metrics .sub{
+  text-align:center;font-size:.75rem;
+  color:#888;letter-spacing:.08em;margin-bottom:3rem;
+}
+.metrics-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3rem;
+  max-width:1100px;width:100%;
+}
+@media(max-width:768px){.metrics-layout{grid-template-columns:1fr;}}
+.metric-panel{background:white;border-radius:20px;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.06);}
+.metric-panel h3{
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;font-style:italic;
+  margin-bottom:1.5rem;color:var(--ink);
+}
+.hit-rates{display:flex;flex-direction:column;gap:1rem;}
+.hit-row{display:flex;align-items:center;gap:1rem;}
+.hit-k{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:#888;width:60px;flex-shrink:0;}
+.hit-bar-wrap{flex:1;height:10px;background:#eee;border-radius:5px;overflow:hidden;}
+.hit-bar{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--jade),var(--jade2));transition:width 1.2s ease;}
+.hit-val{font-size:.8rem;font-weight:700;color:var(--jade);width:40px;text-align:right;}
+.hit-target{
+  margin-top:1.2rem;
+  padding:.8rem 1rem;
+  background:#e8f5ee;
+  border-radius:10px;
+  font-size:.7rem;
+  color:var(--jade);
+  display:flex;align-items:center;gap:.5rem;
+}
+.token-compare{display:flex;gap:1.5rem;}
+.token-col{flex:1;text-align:center;}
+.token-col-label{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:#999;margin-bottom:.8rem;}
+.token-bubble{
+  width:100px;height:100px;
+  border-radius:50%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  margin:0 auto 1rem;
+  font-family:'Playfair Display',serif;
+  transition:transform .3s ease;
+  cursor:default;
+}
+.token-bubble:hover{transform:scale(1.08);}
+.token-bubble.plain{background:#f0f0f0;border:2px dashed #ccc;}
+.token-bubble.agentic{background:linear-gradient(135deg,rgba(244,162,97,.15),rgba(244,162,97,.05));border:2px solid var(--gold);}
+.token-bubble .tnum{font-size:1.5rem;font-weight:900;line-height:1;}
+.token-bubble .tlbl{font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:#888;}
+.token-detail{font-size:.65rem;color:#666;line-height:1.8;}
+.token-win{
+  margin-top:1rem;padding:.6rem .8rem;
+  background:linear-gradient(135deg,rgba(244,162,97,.1),rgba(244,162,97,.05));
+  border-radius:8px;font-size:.68rem;color:var(--gold);
+  border:1px solid rgba(244,162,97,.2);
+  text-align:center;
+}
+
+/* ══════════════════════════════════════════
+   Section 6 — Live demo simulation
+══════════════════════════════════════════ */
+#demo{
+  background:var(--smoke);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#demo h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:900;text-align:center;margin-bottom:.5rem;
+}
+#demo h2 em{font-style:italic;color:var(--saffron);}
+#demo .sub{
+  text-align:center;font-size:.75rem;
+  color:#888;letter-spacing:.08em;margin-bottom:2.5rem;
+}
+.chat-demo{
+  max-width:700px;width:100%;
+  background:white;
+  border-radius:24px;
+  box-shadow:0 24px 80px rgba(0,0,0,.12);
+  overflow:hidden;
+}
+.chat-topbar{
+  background:var(--ink);
+  padding:1rem 1.5rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.chat-dots{display:flex;gap:.4rem;}
+.dot{width:10px;height:10px;border-radius:50%;}
+.dot.r{background:#ff5f57;}.dot.y{background:#febc2e;}.dot.g{background:#28c840;}
+.chat-title{font-size:.7rem;color:rgba(253,250,245,.5);letter-spacing:.15em;text-transform:uppercase;margin:0 auto;}
+.chat-body{padding:1.5rem;display:flex;flex-direction:column;gap:1rem;min-height:360px;}
+.msg{max-width:80%;padding:1rem 1.2rem;border-radius:16px;font-size:.78rem;line-height:1.7;}
+.msg.user{
+  align-self:flex-end;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  color:white;
+  border-radius:16px 16px 4px 16px;
+}
+.msg.bot{
+  align-self:flex-start;
+  background:#FDFAF5;
+  color:var(--ink);
+  border-radius:16px 16px 16px 4px;
+  position:relative;
+}
+.msg.bot::before{
+  content:'◆';position:absolute;top:-20px;left:0;
+  font-size:.7rem;color:var(--gold);
+}
+.tool-call{
+  align-self:flex-start;
+  background:rgba(244,162,97,.08);
+  border:1px solid rgba(244,162,97,.2);
+  border-radius:10px;
+  padding:.6rem 1rem;
+  font-size:.65rem;
+  color:var(--gold);
+  font-family:'Inter',sans-serif;
+  display:flex;align-items:center;gap:.5rem;
+}
+.tool-call .tool-icon{display:inline-flex;align-items:center;flex-shrink:0;}
+.tool-call .tool-icon svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.typing{
+  display:flex;gap:.3rem;align-items:center;padding:.8rem 1rem;
+  background:#FDFAF5;border-radius:16px 16px 16px 4px;
+  align-self:flex-start;
+}
+.typing span{
+  width:6px;height:6px;background:#aaa;border-radius:50%;
+  animation:typeBounce .9s ease-in-out infinite;
+}
+.typing span:nth-child(2){animation-delay:.15s;}
+.typing span:nth-child(3){animation-delay:.3s;}
+@keyframes typeBounce{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-6px);}}
+.chat-input-row{
+  display:flex;gap:.8rem;padding:1rem 1.5rem;
+  border-top:1px solid #eee;
+}
+.chat-queries{display:flex;flex-wrap:wrap;gap:.5rem;max-width:700px;width:100%;justify-content:center;}
+.query-chip{
+  padding:.5rem 1rem;
+  border:1.5px solid var(--gold);
+  border-radius:100px;
+  font-size:.65rem;
+  color:var(--gold);
+  cursor:pointer;
+  transition:all .25s ease;
+  font-family:'Inter',sans-serif;
+  background:transparent;
+}
+.query-chip:hover,.query-chip.selected{background:var(--gold);color:white;}
+
+/* ══════════════════════════════════════════
+   Section 7 — Conclusion
+══════════════════════════════════════════ */
+#closing{
+  background:var(--ink);
+  flex-direction:column;
+  text-align:center;
+  padding:4rem 2rem;
+}
+.closing-inner{position:relative;z-index:2;}
+.closing-inner .section-label{color:var(--gold);}
+.closing-inner h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.5rem,6vw,5rem);
+  font-weight:900;
+  color:#FDFAF5;
+  line-height:1.0;
+  margin-bottom:1.5rem;
+}
+.closing-inner h2 em{font-style:italic;color:var(--gold);}
+.rq-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.2rem;
+  max-width:900px;
+  margin:2rem auto 2.5rem;
+}
+@media(max-width:600px){.rq-grid{grid-template-columns:1fr;}}
+.rq-card{
+  padding:1.5rem;
+  background:rgba(255,255,255,.04);
+  border-radius:16px;
+  border:1px solid rgba(244,162,97,.2);
+  text-align:left;
+  transition:all .3s ease;cursor:default;
+}
+.rq-card:hover{background:rgba(244,162,97,.08);border-color:rgba(244,162,97,.5);transform:translateY(-4px);}
+.rq-num{
+  font-size:.55rem;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;
+}
+.rq-q{font-size:.78rem;color:#FDFAF5;line-height:1.6;font-style:italic;}
+.rq-a{font-size:.7rem;color:rgba(253,250,245,.5);margin-top:.5rem;line-height:1.6;}
+.team-credits{
+  display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;
+  margin-top:2rem;
+}
+.team-credit{
+  padding:.5rem 1.2rem;
+  background:rgba(255,255,255,.05);
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.08);
+  font-size:.65rem;color:rgba(253,250,245,.5);
+  letter-spacing:.1em;
+}
+.course-note{font-size:.6rem;color:rgba(253,250,245,.25);letter-spacing:.15em;margin-top:1.5rem;}
+
+/* ══════════════════════════════════════════
+   Section 8 — Limitations
+══════════════════════════════════════════ */
+#limitations{
+  background:var(--cream);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#limitations .section-label{color:var(--peach-deep);}
+#limitations h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:900;line-height:1.1;
+  color:var(--char);text-align:center;
+  margin-bottom:2.5rem;
+}
+#limitations h2 em{font-style:italic;color:var(--peach-deep);}
+.limit-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1.2rem;
+  max-width:1100px;width:100%;
+}
+.limit-card{
+  background:#fff;
+  border-radius:var(--r-lg,20px);
+  padding:1.8rem;
+  border-top:4px solid;
+  box-shadow:var(--shadow-md);
+  transition:transform .3s ease,box-shadow .3s ease;
+  cursor:default;
+}
+.limit-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);}
+.limit-card.c1{border-color:var(--peach-deep);}
+.limit-card.c2{border-color:var(--peach-mid);}
+.limit-card.c3{border-color:var(--sage-mid);}
+.limit-card.c4{border-color:var(--gold);}
+.limit-card.c5{border-color:var(--lavender,#D6CCF0);}
+.limit-icon{
+  margin-bottom:.8rem;
+  display:flex;align-items:center;justify-content:center;
+  width:40px;height:40px;
+}
+.limit-icon svg{width:32px;height:32px;stroke:currentColor;}
+.limit-card h3{
+  font-family:'Playfair Display',serif;
+  font-size:1rem;font-weight:700;
+  color:var(--char);margin-bottom:.5rem;
+}
+.limit-card p{font-size:.75rem;color:var(--char-mid);line-height:1.7;}
+
+/* ══════════════════════════════════════════
+   Section 9 — Future Discussion
+══════════════════════════════════════════ */
+#future{
+  background:var(--ink);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#future .section-label{color:var(--gold);}
+#future h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:900;color:#FDFAF5;
+  text-align:center;line-height:1.1;
+  margin-bottom:.5rem;
+}
+#future h2 em{font-style:italic;color:var(--gold);}
+#future .sub{
+  text-align:center;font-size:.75rem;
+  color:rgba(253,250,245,.4);letter-spacing:.08em;
+  margin-bottom:3rem;
+}
+.future-cols{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2.5rem;
+  max-width:1100px;width:100%;
+}
+@media(max-width:768px){.future-cols{grid-template-columns:1fr;}}
+.future-col-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;font-weight:700;
+  color:var(--gold);margin-bottom:1.2rem;
+  padding-bottom:.5rem;
+  border-bottom:1px solid rgba(244,162,97,.25);
+}
+.future-item{
+  display:flex;gap:1rem;align-items:flex-start;
+  padding:.8rem 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.future-item:last-child{border-bottom:none;}
+.future-badge{
+  flex-shrink:0;
+  width:36px;height:36px;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+}
+.future-badge svg{width:18px;height:18px;stroke:currentColor;}
+.future-badge.peach{background:rgba(231,111,81,.18);}
+.future-badge.sage{background:rgba(127,175,138,.18);}
+.future-badge.butter{background:rgba(255,232,163,.18);}
+.future-badge.sky{background:rgba(184,216,232,.18);}
+.future-badge.lavender{background:rgba(214,204,240,.18);}
+.future-badge.coral{background:rgba(255,181,167,.18);}
+.future-text h4{
+  font-family:'Inter',sans-serif;
+  font-size:.8rem;font-weight:600;
+  color:#FDFAF5;margin-bottom:.2rem;
+}
+.future-text p{font-size:.7rem;color:rgba(253,250,245,.45);line-height:1.6;}
+
+/* ── Intersection reveal animations ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.reveal-delay-1{transition-delay:.15s;}
+.reveal-delay-2{transition-delay:.3s;}
+.reveal-delay-3{transition-delay:.45s;}
+.reveal-delay-4{transition-delay:.6s;}
+
+/* ── Navigation dots ── */
+#nav-dots{
+  position:fixed;right:2rem;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:.6rem;z-index:100;
+}
+.nav-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(0,0,0,.2);
+  cursor:pointer;
+  transition:all .3s ease;
+}
+.nav-dot.active{background:var(--gold);transform:scale(1.4);}
+#hero~* .nav-dot{background:rgba(255,255,255,.2);}
+
+/* ── Accessible gold on light backgrounds ── */
+#problem .section-label,
+#density .section-label,
+#map-section .section-label,
+#metrics .section-label { color:var(--gold-accessible); }
+.map-legend-title { color:var(--gold-accessible); }
+.poi-density { color:var(--gold-accessible); }
+.query-chip { color:var(--gold-accessible); border-color:var(--gold-accessible); }
+.query-chip:hover,.query-chip.selected { background:var(--gold-accessible); border-color:var(--gold-accessible); color:white; }
+.token-win { color:var(--gold-accessible); border-color:rgba(168,82,0,.25); }
+
+/* ══════════════════════════════════════════
+   Section 07 — Baseline Comparison
+══════════════════════════════════════════ */
+#baseline{
+  background:var(--paper);
+  flex-direction:column;
+  padding:4rem 2rem;
+}
+#baseline h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3rem);
+  font-weight:900;text-align:center;margin-bottom:.5rem;
+}
+#baseline h2 em{font-style:italic;color:var(--jade);}
+#baseline .sub{
+  text-align:center;font-size:.75rem;
+  color:#888;letter-spacing:.08em;margin-bottom:2.5rem;
+}
+.baseline-query-box{
+  background:var(--ink);
+  border-radius:14px;
+  padding:1rem 1.8rem;
+  font-size:.82rem;
+  color:rgba(253,250,245,.8);
+  margin-bottom:2rem;
+  max-width:700px;
+  width:100%;
+  text-align:center;
+}
+.baseline-query-box strong{color:var(--gold);}
+.baseline-cols{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:2rem;
+  max-width:1100px;width:100%;
+  margin-bottom:2rem;
+}
+@media(max-width:700px){.baseline-cols{grid-template-columns:1fr;}}
+.baseline-col{
+  border-radius:20px;
+  padding:1.8rem;
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+.baseline-col.vanilla{
+  background:#f9f9f9;
+  border:2px dashed #ccc;
+}
+.baseline-col.agentic{
+  background:linear-gradient(135deg,rgba(244,162,97,.06),rgba(74,124,89,.06));
+  border:2px solid var(--gold);
+  box-shadow:0 8px 32px rgba(244,162,97,.12);
+}
+.baseline-col-label{
+  font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:700;margin-bottom:.3rem;
+}
+.baseline-col.vanilla .baseline-col-label{color:#999;}
+.baseline-col.agentic .baseline-col-label{color:var(--gold-accessible);}
+.baseline-steps{
+  display:flex;flex-direction:column;gap:.4rem;
+}
+.baseline-step{
+  display:flex;align-items:flex-start;gap:.6rem;
+  font-size:.72rem;color:#555;line-height:1.5;
+}
+.baseline-step-num{
+  flex-shrink:0;
+  width:18px;height:18px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.55rem;font-weight:700;
+  margin-top:1px;
+}
+.baseline-col.vanilla .baseline-step-num{background:#e0e0e0;color:#666;}
+.baseline-col.agentic .baseline-step-num{background:var(--gold);color:white;}
+.baseline-response{
+  background:white;
+  border-radius:12px;
+  padding:1rem 1.2rem;
+  font-size:.73rem;
+  line-height:1.7;
+  color:#444;
+  flex:1;
+  border-left:3px solid;
+}
+.baseline-col.vanilla .baseline-response{border-color:#ccc;}
+.baseline-col.agentic .baseline-response{border-color:var(--jade);}
+.baseline-footer{
+  margin-top:.5rem;
+  padding:.6rem .8rem;
+  border-radius:8px;
+  font-size:.65rem;
+  display:flex;gap:.8rem;flex-wrap:wrap;
+}
+.baseline-col.vanilla .baseline-footer{background:#f0f0f0;color:#777;}
+.baseline-col.agentic .baseline-footer{background:rgba(74,124,89,.08);color:var(--jade);}
+.baseline-footer span{font-weight:600;}
+.baseline-diff-table{
+  max-width:700px;width:100%;
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,.07);
+}
+.baseline-diff-row{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:0;
+}
+.baseline-diff-row:first-child{
+  background:var(--ink);color:#FDFAF5;
+  font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;
+}
+.baseline-diff-row:not(:first-child){
+  background:white;
+  border-bottom:1px solid #eee;
+  font-size:.75rem;
+}
+.baseline-diff-row:last-child{border-bottom:none;}
+.baseline-diff-cell{
+  padding:.8rem 1rem;
+}
+.baseline-diff-row:first-child .baseline-diff-cell{padding:.7rem 1rem;}
+.baseline-diff-cell.metric{color:#888;font-size:.68rem;}
+.baseline-diff-cell.vanilla-val{color:#888;}
+.baseline-diff-cell.agentic-val{color:var(--jade);font-weight:700;}
+
+/* ── Baseline query tabs ── */
+.baseline-tabs{
+  display:flex;gap:.6rem;flex-wrap:wrap;
+  justify-content:center;margin-bottom:2rem;
+}
+.baseline-tab-btn{
+  padding:.45rem 1.2rem;
+  border-radius:100px;
+  border:1.5px solid var(--jade);
+  font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;transition:all .25s ease;
+  font-family:'Inter',sans-serif;
+  background:transparent;color:var(--jade);
+}
+.baseline-tab-btn.active,.baseline-tab-btn:hover{background:var(--jade);color:white;}
+.baseline-case{display:none;}
+.baseline-case.active{display:flex;flex-direction:column;align-items:center;width:100%;}
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Navigation dots -->
+<nav id="nav-dots">
+  <div class="nav-dot active" tabindex="0" data-target="hero" title="Hero"></div>
+  <div class="nav-dot" tabindex="0" data-target="problem" title="Problem"></div>
+  <div class="nav-dot" tabindex="0" data-target="pipeline" title="Pipeline"></div>
+  <div class="nav-dot" tabindex="0" data-target="density" title="POI Density"></div>
+  <div class="nav-dot" tabindex="0" data-target="map-section" title="Map"></div>
+  <div class="nav-dot" tabindex="0" data-target="sentiment" title="Sentiment"></div>
+  <div class="nav-dot" tabindex="0" data-target="metrics" title="Metrics"></div>
+  <div class="nav-dot" tabindex="0" data-target="demo" title="Demo"></div>
+  <div class="nav-dot" tabindex="0" data-target="baseline" title="Baseline Comparison"></div>
+  <div class="nav-dot" tabindex="0" data-target="limitations" title="Limitations"></div>
+  <div class="nav-dot" tabindex="0" data-target="future" title="Future Work"></div>
+  <div class="nav-dot" tabindex="0" data-target="closing" title="Conclusion"></div>
+</nav>
+
+<!-- ══ Hero section ══════════════════════════════════════ -->
+<section id="hero">
+  <div class="hero-noise"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-inner">
+    <p class="hero-eyebrow">AI & Large Models · Final Project</p>
+    <h1 class="hero-title">
+      <em>Agentic RAG</em>
+      Empowering Smart Tourism
+      <span>Chiang Mai, Thailand</span>
+    </h1>
+    <p class="hero-sub">Boonyoros Pheechaphuth · LS2525207 &nbsp;|&nbsp; Teh Bismin · LS2525222</p>
+    <div class="hero-pills">
+      <div class="pill">YouTube Sentiment Analysis</div>
+      <div class="pill">GNSS Trajectory · DBSCAN</div>
+      <div class="pill">FAISS Vector Search</div>
+      <div class="pill">Groq LLaMA 3.1 · ReAct</div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll to explore</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══ Problem section ════════════════════════════════════ -->
+<section id="problem">
+  <div class="problem-layout">
+    <div class="problem-text reveal">
+      <p class="section-label">01 · Pain Point</p>
+      <h2>Overtourism is <em>eroding</em> Chiang Mai's heritage</h2>
+      <p>Chiang Mai receives millions of tourists annually, yet no intelligent system integrates crowd data, visitor sentiment, and spatial intelligence to provide actionable guidance.</p>
+      <p>We built an <strong>Agentic RAG system</strong> that fuses GNSS trajectory analysis, YouTube sentiment mining, and LLM reasoning to answer overtourism-related questions with real spatial context.</p>
+    </div>
+    <div class="stat-stack">
+      <div class="stat-card very-high reveal reveal-delay-1">
+        <div class="num">0.92</div>
+        <div class="label">Highest GPS density — Sunday Walking Street</div>
+        <div class="desc">420 simulated GPS traces · avg dwell 90 min · extreme overtourism risk</div>
+      </div>
+      <div class="stat-card high reveal reveal-delay-2">
+        <div class="num">4 of 24</div>
+        <div class="label">POIs at high or very high overtourism risk</div>
+        <div class="desc">Doi Suthep · Sunday Walking Street · Night Bazaar · Wat Phra Singh</div>
+      </div>
+      <div class="stat-card medium reveal reveal-delay-3">
+        <div class="num">78.9%</div>
+        <div class="label">Hit Rate @5 — RAG retrieval quality</div>
+        <div class="desc">Exceeds 75% target on 38 query eval set · FAISS cosine similarity</div>
+      </div>
+      <div class="stat-card low reveal reveal-delay-4">
+        <div class="num">$0.00</div>
+        <div class="label">Total project cost</div>
+        <div class="desc">100% free stack: YouTube API · Groq · HuggingFace local models · FAISS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Pipeline section ═══════════════════════════════════ -->
+<section id="pipeline">
+  <div style="width:100%;max-width:1100px;">
+    <p class="section-label" style="text-align:center;">02 · System Architecture</p>
+    <h2>Four-step intelligent pipeline</h2>
+    <p class="sub">From raw data to agentic answers — fully open-source and zero cost</p>
+    <div class="pipeline-flow">
+      <div class="pipe-step reveal" onclick="highlightPipe(this)">
+        <div class="pipe-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <h3>Sentiment Mining</h3>
+        <p>YouTube Data API · 8 POI queries · English + location filtering · XLM-RoBERTa sentiment classification</p>
+        <div class="pipe-tag">sentiment_data.csv</div>
+      </div>
+      <div class="pipe-step reveal reveal-delay-1" onclick="highlightPipe(this)">
+        <div class="pipe-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg></div>
+        <h3>GPS Simulation</h3>
+        <p>OSM anchor points · correlated random walk · DBSCAN ε=0.002° · speed filter &lt;150 km/h</p>
+        <div class="pipe-tag">hotspots.geojson</div>
+      </div>
+      <div class="pipe-step reveal reveal-delay-2" onclick="highlightPipe(this)">
+        <div class="pipe-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
+        <h3>Vector Indexing</h3>
+        <p>MiniLM-L12 384-dim embeddings · FAISS IndexFlatIP cosine · 38-query eval set · Hit Rate @5 = 78.9%</p>
+        <div class="pipe-tag">faiss.index</div>
+      </div>
+      <div class="pipe-step reveal reveal-delay-3 active-step" onclick="highlightPipe(this)">
+        <div class="pipe-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+        <h3>Agent Runtime</h3>
+        <p>Groq LLaMA 3.1 8B · ReAct loop · 4 tools: get_hotspot, get_sentiment, search_poi, rag_retrieve</p>
+        <div class="pipe-tag">streamlit run app.py</div>
+      </div>
+    </div>
+    <!-- Data provenance -->
+    <div style="margin-top:2.5rem;max-width:900px;width:100%;margin-left:auto;margin-right:auto;background:rgba(253,250,245,.06);border:1px solid rgba(244,162,97,.15);border-radius:16px;padding:1.4rem 1.8rem;">
+      <div style="font-size:.58rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;">Data Provenance</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;">
+        <div style="font-size:.7rem;color:rgba(253,250,245,.55);line-height:1.7;">
+          <span style="color:rgba(253,250,245,.8);font-weight:600;">YouTube Sentiment</span><br>
+          8 POIs · queries: "<em>[POI name] chiang mai review</em>" · English-language filter · collected via YouTube Data API v3 · cardiffnlp/twitter-xlm-roberta-base-sentiment
+        </div>
+        <div style="font-size:.7rem;color:rgba(253,250,245,.55);line-height:1.7;">
+          <span style="color:rgba(253,250,245,.8);font-weight:600;">GPS Trajectories</span><br>
+          420 synthetic traces · seeded from OSM POI coordinates for 24 locations · correlated random walk (σ=0.0003°, steps=200) · DBSCAN clusters at ε=0.002°, min_samples=5
+        </div>
+        <div style="font-size:.7rem;color:rgba(253,250,245,.55);line-height:1.7;">
+          <span style="color:rgba(253,250,245,.8);font-weight:600;">FAISS Index</span><br>
+          38 hand-crafted evaluation queries across 6 categories · paraphrase-multilingual-MiniLM-L12-v2 · 384-dim · inner-product cosine similarity · built from merged sentiment + GPS documents
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Density section ════════════════════════════════════ -->
+<section id="density">
+  <div style="width:100%;max-width:1100px;">
+    <p class="section-label" style="text-align:center;">03 · GPS Density Analysis</p>
+    <h2><em>Crowd density</em> ranking of 24 POIs</h2>
+    <p class="sub">DBSCAN-based density scores · data from config_pois.json + step2_gps.py simulation</p>
+    <div class="filter-row">
+      <button class="filter-btn all active" onclick="filterPOIs('all',this)">All POIs</button>
+      <button class="filter-btn very_high" onclick="filterPOIs('very_high',this)">Very high risk</button>
+      <button class="filter-btn high" onclick="filterPOIs('high',this)">High risk</button>
+      <button class="filter-btn medium" onclick="filterPOIs('medium',this)">Medium risk</button>
+      <button class="filter-btn low" onclick="filterPOIs('low',this)">Low risk</button>
+    </div>
+    <div class="poi-grid" id="poiGrid"></div>
+  </div>
+</section>
+
+<!-- ══ Interactive map section ═══════════════════════════ -->
+<section id="map-section">
+  <div style="width:100%;max-width:1200px;">
+    <p class="section-label" style="text-align:center;">03.5 · Spatial Intelligence</p>
+    <h2>GPS Hotspots <span style="font-style:italic;color:var(--saffron);">Interactive Map</span></h2>
+    <p class="sub">Leaflet-based visualization · Click markers for detailed stats</p>
+    
+    <div class="map-layout">
+      <div id="poi-map"></div>
+
+      <div class="map-sidebar">
+        <div class="map-legend reveal">
+          <div class="map-legend-title">Density levels</div>
+          <div class="legend-row">
+            <div class="legend-dot-circle" style="background:#e03939;"></div>
+            <span>High risk (&gt;80%) — extreme density</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot-circle" style="background:#c8972a;"></div>
+            <span>Medium risk (60–80%) — moderate density</span>
+          </div>
+          <div class="legend-row">
+            <div class="legend-dot-circle" style="background:#2d6a4f;"></div>
+            <span>Low risk (&lt;60%) — low density</span>
+          </div>
+        </div>
+
+        <div class="map-poi-list reveal reveal-delay-1">
+          <div class="map-poi-list-header">TOP 8 by density</div>
+          <div class="map-poi-row" data-poi-idx="0">
+            <div class="poi-dot" style="background:#e03939;"></div>
+            <div><div class="poi-name-th">Sunday Walking Street</div><div class="poi-name-en">Wualai Road Sunday Market</div></div>
+            <div class="poi-density">92%</div>
+          </div>
+          <div class="map-poi-row" data-poi-idx="1">
+            <div class="poi-dot" style="background:#e03939;"></div>
+            <div><div class="poi-name-th">Wat Doi Suthep</div><div class="poi-name-en">Doi Suthep Temple</div></div>
+            <div class="poi-density">88%</div>
+          </div>
+          <div class="map-poi-row" data-poi-idx="2">
+            <div class="poi-dot" style="background:#e03939;"></div>
+            <div><div class="poi-name-th">Wat Phra Singh</div><div class="poi-name-en">Phra Singh Temple</div></div>
+            <div class="poi-density">85%</div>
+          </div>
+          <div class="map-poi-row" data-poi-idx="3">
+            <div class="poi-dot" style="background:#e03939;"></div>
+            <div><div class="poi-name-th">Wat Chedi Luang</div><div class="poi-name-en">Chedi Luang Temple</div></div>
+            <div class="poi-density">80%</div>
+          </div>
+          <div class="map-poi-row" data-poi-idx="5">
+            <div class="poi-dot" style="background:#e03939;"></div>
+            <div><div class="poi-name-th">Night Bazaar</div><div class="poi-name-en">Chiang Mai Night Bazaar</div></div>
+            <div class="poi-density">78%</div>
+          </div>
+          <div class="map-poi-row" data-poi-idx="4">
+            <div class="poi-dot" style="background:#c8972a;"></div>
+            <div><div class="poi-name-th">Nimmanhaemin Road</div><div class="poi-name-en">Nimman Road</div></div>
+            <div class="poi-density">75%</div>
+          </div>
+          <div class="map-poi-row" data-poi-idx="6">
+            <div class="poi-dot" style="background:#c8972a;"></div>
+            <div><div class="poi-name-th">Tha Phae Gate</div><div class="poi-name-en">Old City East Gate</div></div>
+            <div class="poi-density">72%</div>
+          </div>
+          <div class="map-poi-row" data-poi-idx="7">
+            <div class="poi-dot" style="background:#c8972a;"></div>
+            <div><div class="poi-name-th">Doi Inthanon National Park</div><div class="poi-name-en">Doi Inthanon</div></div>
+            <div class="poi-density">65%</div>
+          </div>
+        </div>
+
+        <div class="map-time-badge reveal reveal-delay-2">
+          <strong><span style="display:inline-flex;vertical-align:middle;margin-right:4px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--saffron)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span> Travel tip</strong><br>
+          Peak hours vary: Night markets 17:00–22:00 · Temples 07:00–12:00.<br>
+          Click map markers or the side list to see details and real-life photos.
+        </div>
+      </div>
+    </div>
+
+    <div class="poi-preview-section" id="poi-preview-section">
+      <div class="poi-preview-eyebrow"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Photo preview</div>
+      <div class="poi-preview-title" id="poi-preview-title"></div>
+      <div class="poi-preview-title-en" id="poi-preview-title-en"></div>
+      <div class="poi-preview-grid" id="poi-preview-grid">
+        <div class="poi-preview-img-wrap"><img id="poi-img-0" src="" alt="" loading="lazy" onerror="this.src='https://placehold.co/400x240/2d6a4f/f5f0e8?text=Chiang+Mai'"></div>
+        <div class="poi-preview-img-wrap"><img id="poi-img-1" src="" alt="" loading="lazy" onerror="this.src='https://placehold.co/400x240/c8972a/f5f0e8?text=Temple+View'"></div>
+        <div class="poi-preview-img-wrap"><img id="poi-img-2" src="" alt="" loading="lazy" onerror="this.src='https://placehold.co/400x240/e07b39/f5f0e8?text=Chiang+Mai+Night'"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Sentiment section ══════════════════════════════════ -->
+<section id="sentiment">
+  <div class="sent-layout">
+    <div class="sent-left reveal">
+      <p class="section-label">04 · Visitor Sentiment</p>
+      <h3>Overall sentiment across 8 major POIs</h3>
+      <div class="donut-wrap">
+        <svg viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#1a1a1a" stroke-width="18"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#40916c" stroke-width="18"
+            stroke-dasharray="148.6 238.8" stroke-dashoffset="0" transform="rotate(-90 50 50)"
+            style="transition:stroke-dasharray 1.5s ease;"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#c8972a" stroke-width="18"
+            stroke-dasharray="57.3 330.1" stroke-dashoffset="-148.6" transform="rotate(-90 50 50)"
+            style="transition:stroke-dasharray 1.5s ease 0.3s;"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#c0392b" stroke-width="18"
+            stroke-dasharray="33.4 354" stroke-dashoffset="-205.9" transform="rotate(-90 50 50)"
+            style="transition:stroke-dasharray 1.5s ease 0.6s;"/>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-num">62%</div>
+          <div class="donut-lbl">positive</div>
+        </div>
+      </div>
+      <div class="legend-row"><div class="legend-dot" style="background:#40916c;"></div><span class="legend-text">Positive reviews</span><span class="legend-pct">62%</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#c8972a;"></div><span class="legend-text">Neutral reviews</span><span class="legend-pct">24%</span></div>
+      <div class="legend-row"><div class="legend-dot" style="background:#c0392b;"></div><span class="legend-text">Negative reviews</span><span class="legend-pct">14%</span></div>
+    </div>
+    <div class="sent-right reveal reveal-delay-2">
+      <h3>Per-POI sentiment breakdown</h3>
+      <div class="poi-sentiment-list" id="sentimentList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Metrics section ════════════════════════════════════ -->
+<section id="metrics">
+  <div style="width:100%;max-width:1100px;">
+    <p class="section-label" style="text-align:center;">05 · Evaluation Results</p>
+    <h2>Retrieval & efficiency <em>beyond targets</em></h2>
+    <p class="sub">38 query evaluation set · paraphrase-multilingual-MiniLM-L12-v2 embeddings · Groq LLaMA 3.1 8B</p>
+    <div class="metrics-layout">
+      <div class="metric-panel reveal">
+        <h3>RAG retrieval quality</h3>
+        <div class="hit-rates" id="hitRates"></div>
+        <div class="hit-target"><span class="icon" style="margin-right:.3rem;"><svg viewBox="0 0 24 24" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg></span>Target achieved · Hit Rate @5 ≥ 0.75 (proposal §4 O2)</div>
+      </div>
+      <div class="metric-panel reveal reveal-delay-2">
+        <h3>Token economics (RQ3)</h3>
+        <div class="token-compare">
+          <div class="token-col">
+            <div class="token-col-label">Vanilla RAG</div>
+            <div class="token-bubble plain">
+              <div class="tnum">430</div>
+              <div class="tlbl">tokens/query</div>
+            </div>
+            <div class="token-detail">
+              Input: ~250 tokens<br>
+              Output: ~180 tokens<br>
+              Tool calls: 0<br>
+              Cost: $0.000022
+            </div>
+          </div>
+          <div class="token-col">
+            <div class="token-col-label">Agentic RAG</div>
+            <div class="token-bubble agentic">
+              <div class="tnum" style="color:var(--gold);">742</div>
+              <div class="tlbl">tokens/query</div>
+            </div>
+            <div class="token-detail">
+              Input: ~480 tokens<br>
+              Output: ~262 tokens<br>
+              Tool calls: ~3–4<br>
+              Cost: $0.000037
+            </div>
+          </div>
+        </div>
+        <div class="token-win"><span class="icon" style="margin-right:.3rem;"><svg viewBox="0 0 24 24" width="14" height="14"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Agentic RAG uses 1.7x more tokens but achieves Hit Rate @5 = 78.9%</div>
+      </div>
+      <div class="metric-panel reveal reveal-delay-1" style="grid-column:1/-1;">
+        <h3>Hit Rate @5 by category</h3>
+        <div id="catBars" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:.5rem;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Demo section ═══════════════════════════════════════ -->
+<section id="demo">
+  <div style="width:100%;max-width:700px;display:flex;flex-direction:column;align-items:center;gap:1.5rem;">
+    <p class="section-label" style="text-align:center;">06 · Agentic RAG in action</p>
+    <h2 style="text-align:center;">Watch the <em>ReAct loop</em> at work</h2>
+    <p class="sub">Click a query below to see the agent reason, call tools, and answer</p>
+    <div class="chat-queries" id="queryChips"></div>
+    <div class="chat-demo" role="region" aria-label="Agentic RAG interactive demo">
+      <div class="chat-topbar">
+        <div class="chat-dots" aria-hidden="true">
+          <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+        </div>
+        <span class="chat-title">Chiang Mai Smart Tourism AI · LLaMA 3.1 8B</span>
+      </div>
+      <div class="chat-body" id="chatBody" role="log" aria-live="polite" aria-label="Conversation messages">
+        <div class="msg bot">สวัสดีครับ! I'm your Chiang Mai travel assistant.<br>Ask me about crowd density, visitor reviews, or place recommendations. <span class="icon"><svg viewBox="0 0 24 24" width="16" height="16"><rect x="3" y="10" width="18" height="11"/><path d="M3 10V6h3V3h3v3h3V3h3v3h3v4"/><line x1="9" y1="21" x2="9" y2="15"/><line x1="15" y1="21" x2="15" y2="15"/></svg></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Baseline Comparison section ══════════════════════════ -->
+<section id="baseline">
+  <div style="width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;">
+    <p class="section-label" style="text-align:center;">07 · Baseline Comparison</p>
+    <h2>Vanilla RAG vs <em>Agentic RAG</em></h2>
+    <p class="sub">Same query — two architectures. See what the agent adds.</p>
+
+    <!-- Query tabs -->
+    <div class="baseline-tabs">
+      <button class="baseline-tab-btn active" onclick="showBaselineCase(0,this)">Case 1 · Crowd &amp; Sentiment</button>
+      <button class="baseline-tab-btn" onclick="showBaselineCase(1,this)">Case 2 · Temporal Planning</button>
+      <button class="baseline-tab-btn" onclick="showBaselineCase(2,this)">Case 3 · Cross-type Recommendation</button>
+    </div>
+
+    <!-- ─── Case 1: Wat Doi Suthep ─── -->
+    <div class="baseline-case active" id="baseline-case-0" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0;max-width:1100px;">
+      <div class="baseline-query-box">
+        <strong>Query:</strong> "Is Wat Doi Suthep crowded right now? What do visitors say about it?"
+      </div>
+      <div class="baseline-cols reveal">
+        <div class="baseline-col vanilla">
+          <div class="baseline-col-label">Vanilla RAG</div>
+          <div class="baseline-steps">
+            <div class="baseline-step"><div class="baseline-step-num">1</div>Embed query → FAISS nearest-neighbour search</div>
+            <div class="baseline-step"><div class="baseline-step-num">2</div>Retrieve top-5 text documents</div>
+            <div class="baseline-step"><div class="baseline-step-num">3</div>Single LLM call with retrieved context → answer</div>
+          </div>
+          <div class="baseline-response">
+            "Wat Doi Suthep is one of Chiang Mai's most popular temples. Based on visitor accounts, it can get quite busy, especially during holiday periods. Visitors generally recommend arriving early in the morning to avoid crowds…"
+            <br><br><em style="font-size:.65rem;color:#aaa;">No GPS data · no real-time density · generic timing advice</em>
+          </div>
+          <div class="baseline-footer"><span>~430 tokens</span> · <span>1 retrieval step</span> · text-only context</div>
+        </div>
+        <div class="baseline-col agentic">
+          <div class="baseline-col-label">Agentic RAG</div>
+          <div class="baseline-steps">
+            <div class="baseline-step"><div class="baseline-step-num">1</div>ReAct planner decomposes query into sub-tasks</div>
+            <div class="baseline-step"><div class="baseline-step-num">2</div><code style="font-size:.65rem;">get_hotspot("Wat Doi Suthep")</code> → density 0.88, 320 traces, peak 07:00–10:00</div>
+            <div class="baseline-step"><div class="baseline-step-num">3</div><code style="font-size:.65rem;">get_sentiment("Wat Doi Suthep")</code> → 65% positive, crowd complaints flagged</div>
+            <div class="baseline-step"><div class="baseline-step-num">4</div><code style="font-size:.65rem;">rag_retrieve("Doi Suthep crowd peak hours")</code> → supporting context</div>
+            <div class="baseline-step"><div class="baseline-step-num">5</div>Synthesise GPS + sentiment + text into a grounded answer</div>
+          </div>
+          <div class="baseline-response">
+            "GPS density at Wat Doi Suthep is <strong>0.88 / 1.00</strong> — High risk. Peak congestion: <strong>07:00–10:00</strong> with 320 simulated traces. Visitor sentiment: 65% positive, but crowd-related complaints appear frequently. Best window: <strong>after 14:00 on weekdays</strong>."
+            <br><br><em style="font-size:.65rem;color:#777;">Grounded in real density scores · sentiment-backed · time-specific</em>
+          </div>
+          <div class="baseline-footer"><span>~742 tokens</span> · <span>3–4 tool calls</span> · GPS + sentiment + RAG</div>
+        </div>
+      </div>
+      <!-- Comparison table -->
+      <div class="baseline-diff-table reveal reveal-delay-1">
+        <div class="baseline-diff-row"><div class="baseline-diff-cell">Dimension</div><div class="baseline-diff-cell">Vanilla RAG</div><div class="baseline-diff-cell">Agentic RAG</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Tokens / query</div><div class="baseline-diff-cell vanilla-val">~430</div><div class="baseline-diff-cell agentic-val">~742 (1.7×)</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Tool calls</div><div class="baseline-diff-cell vanilla-val">1 (retrieval only)</div><div class="baseline-diff-cell agentic-val">3–4</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Data sources</div><div class="baseline-diff-cell vanilla-val">Text index only</div><div class="baseline-diff-cell agentic-val">GPS + Sentiment + Text</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Hit Rate @5</div><div class="baseline-diff-cell vanilla-val">Not evaluated</div><div class="baseline-diff-cell agentic-val">0.789 (target ≥ 0.75)</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Answer specificity</div><div class="baseline-diff-cell vanilla-val">Generic timing advice</div><div class="baseline-diff-cell agentic-val">Density score + peak hours</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Cost / query</div><div class="baseline-diff-cell vanilla-val">~$0.000022</div><div class="baseline-diff-cell agentic-val">~$0.000037</div></div>
+      </div>
+    </div>
+
+    <!-- ─── Case 2: Night Bazaar – temporal planning ─── -->
+    <div class="baseline-case" id="baseline-case-1" style="display:none;width:100%;display:flex;flex-direction:column;align-items:center;gap:0;">
+      <div class="baseline-query-box">
+        <strong>Query:</strong> "When is the best time to visit Night Bazaar to avoid the crowds?"
+      </div>
+      <div class="baseline-cols reveal">
+        <div class="baseline-col vanilla">
+          <div class="baseline-col-label">Vanilla RAG</div>
+          <div class="baseline-steps">
+            <div class="baseline-step"><div class="baseline-step-num">1</div>Embed query → FAISS nearest-neighbour search</div>
+            <div class="baseline-step"><div class="baseline-step-num">2</div>Retrieve top-5 documents mentioning "Night Bazaar"</div>
+            <div class="baseline-step"><div class="baseline-step-num">3</div>Single LLM call → generic opening-hours answer</div>
+          </div>
+          <div class="baseline-response">
+            "Chiang Mai Night Bazaar is typically open from early evening until late night. To avoid the biggest crowds, many travel guides suggest visiting on weeknights rather than weekends, and arriving before 19:00 when stalls are setting up…"
+            <br><br><em style="font-size:.65rem;color:#aaa;">No density data · no actual peak-hour measurement · no sentiment signals</em>
+          </div>
+          <div class="baseline-footer"><span>~420 tokens</span> · <span>1 retrieval step</span> · text-only context</div>
+        </div>
+        <div class="baseline-col agentic">
+          <div class="baseline-col-label">Agentic RAG</div>
+          <div class="baseline-steps">
+            <div class="baseline-step"><div class="baseline-step-num">1</div>ReAct planner identifies: need density + peak hours + sentiment</div>
+            <div class="baseline-step"><div class="baseline-step-num">2</div><code style="font-size:.65rem;">get_hotspot("Night Bazaar")</code> → density 0.78, 290 traces, peak 18:00–23:00</div>
+            <div class="baseline-step"><div class="baseline-step-num">3</div><code style="font-size:.65rem;">get_sentiment("Night Bazaar")</code> → 55% positive; touts &amp; crowds as top complaint</div>
+            <div class="baseline-step"><div class="baseline-step-num">4</div><code style="font-size:.65rem;">rag_retrieve("Night Bazaar avoid crowds timing weekday")</code> → additional context</div>
+            <div class="baseline-step"><div class="baseline-step-num">5</div>Synthesise GPS peak window + complaint themes → actionable advice</div>
+          </div>
+          <div class="baseline-response">
+            "Night Bazaar GPS density is <strong>0.78 / 1.00</strong> — High risk. Peak: <strong>18:00–23:00</strong> (290 traces). Sentiment: 55% positive; most negative reviews cite aggressive vendors near the main entrance. Recommended window: <strong>21:30–23:00</strong> when density drops ~20%. Weekday visits show noticeably fewer traces than Saturday."
+            <br><br><em style="font-size:.65rem;color:#777;">Peak hours from real trace data · complaint theme extracted from sentiment · time-slot recommendation</em>
+          </div>
+          <div class="baseline-footer"><span>~720 tokens</span> · <span>3–4 tool calls</span> · GPS + sentiment + RAG</div>
+        </div>
+      </div>
+      <div class="baseline-diff-table reveal reveal-delay-1">
+        <div class="baseline-diff-row"><div class="baseline-diff-cell">Dimension</div><div class="baseline-diff-cell">Vanilla RAG</div><div class="baseline-diff-cell">Agentic RAG</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Peak-hour accuracy</div><div class="baseline-diff-cell vanilla-val">Inferred from text</div><div class="baseline-diff-cell agentic-val">Measured from 290 GPS traces</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Complaint theme</div><div class="baseline-diff-cell vanilla-val">Not extracted</div><div class="baseline-diff-cell agentic-val">Vendors/touts flagged from sentiment</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Specific time window</div><div class="baseline-diff-cell vanilla-val">Generic "before 19:00"</div><div class="baseline-diff-cell agentic-val">Data-driven 21:30–23:00 window</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Tokens / query</div><div class="baseline-diff-cell vanilla-val">~420</div><div class="baseline-diff-cell agentic-val">~720 (1.7×)</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Cost / query</div><div class="baseline-diff-cell vanilla-val">~$0.000021</div><div class="baseline-diff-cell agentic-val">~$0.000036</div></div>
+      </div>
+    </div>
+
+    <!-- ─── Case 3: Café / dining recommendation ─── -->
+    <div class="baseline-case" id="baseline-case-2" style="display:none;width:100%;display:flex;flex-direction:column;align-items:center;gap:0;">
+      <div class="baseline-query-box">
+        <strong>Query:</strong> "Where can I enjoy Chiang Mai's café scene without the tourist crowds?"
+      </div>
+      <div class="baseline-cols reveal">
+        <div class="baseline-col vanilla">
+          <div class="baseline-col-label">Vanilla RAG</div>
+          <div class="baseline-steps">
+            <div class="baseline-step"><div class="baseline-step-num">1</div>Embed query → FAISS nearest-neighbour search on "café" keywords</div>
+            <div class="baseline-step"><div class="baseline-step-num">2</div>Retrieve top-5 documents — mostly Nimman Road mentions</div>
+            <div class="baseline-step"><div class="baseline-step-num">3</div>Single LLM call → generic neighbourhood recommendation</div>
+          </div>
+          <div class="baseline-response">
+            "Nimmanhaemin Road is Chiang Mai's trendiest café district, lined with specialty coffee shops and boutiques. For a less touristy experience you might also explore the Old City's smaller lanes. The area is busiest on weekends and evenings…"
+            <br><br><em style="font-size:.65rem;color:#aaa;">No cross-POI density comparison · no sentiment signal per venue type · vague "less touristy" claim</em>
+          </div>
+          <div class="baseline-footer"><span>~415 tokens</span> · <span>1 retrieval step</span> · text-only context</div>
+        </div>
+        <div class="baseline-col agentic">
+          <div class="baseline-col-label">Agentic RAG</div>
+          <div class="baseline-steps">
+            <div class="baseline-step"><div class="baseline-step-num">1</div>ReAct planner: need to compare café/dining POIs by density + sentiment</div>
+            <div class="baseline-step"><div class="baseline-step-num">2</div><code style="font-size:.65rem;">search_poi("café dining")</code> → returns Nimmanhaemin, MAYA, Central Festival</div>
+            <div class="baseline-step"><div class="baseline-step-num">3</div><code style="font-size:.65rem;">get_hotspot("Nimmanhaemin Road")</code> → density 0.75, peak 18:00–22:00; sentiment 74% positive</div>
+            <div class="baseline-step"><div class="baseline-step-num">4</div><code style="font-size:.65rem;">rag_retrieve("Chiang Mai café low crowd quiet")</code> → Mae Kampong &amp; Wat Umong area context</div>
+            <div class="baseline-step"><div class="baseline-step-num">5</div>Rank candidates by (density↓, sentiment↑) and synthesise into tiered advice</div>
+          </div>
+          <div class="baseline-response">
+            "For the best café experience with minimal crowds: <strong>1. Nimmanhaemin Road before 17:00</strong> (density 0.75 but drops to ~0.50 in the afternoon; 74% positive sentiment, praised for coffee quality). <strong>2. Mae Kampong Village</strong> (density 0.48, 80% positive — ideal for a slow day trip). Avoid Nimman after 18:00 on weekends when density peaks."
+            <br><br><em style="font-size:.65rem;color:#777;">Cross-POI density ranking · sentiment-confirmed quality · time-slot and day-of-week guidance</em>
+          </div>
+          <div class="baseline-footer"><span>~760 tokens</span> · <span>4 tool calls</span> · GPS + sentiment + RAG</div>
+        </div>
+      </div>
+      <div class="baseline-diff-table reveal reveal-delay-1">
+        <div class="baseline-diff-row"><div class="baseline-diff-cell">Dimension</div><div class="baseline-diff-cell">Vanilla RAG</div><div class="baseline-diff-cell">Agentic RAG</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">POIs compared</div><div class="baseline-diff-cell vanilla-val">1 (Nimman mentioned)</div><div class="baseline-diff-cell agentic-val">3 ranked by density + sentiment</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Crowd evidence</div><div class="baseline-diff-cell vanilla-val">"Less touristy" (vague)</div><div class="baseline-diff-cell agentic-val">Density 0.75 → 0.48, measured</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Quality signal</div><div class="baseline-diff-cell vanilla-val">None</div><div class="baseline-diff-cell agentic-val">74–80% positive sentiment confirmed</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Tokens / query</div><div class="baseline-diff-cell vanilla-val">~415</div><div class="baseline-diff-cell agentic-val">~760 (1.8×)</div></div>
+        <div class="baseline-diff-row"><div class="baseline-diff-cell metric">Cost / query</div><div class="baseline-diff-cell vanilla-val">~$0.000021</div><div class="baseline-diff-cell agentic-val">~$0.000038</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ Limitations section ════════════════════════════════════ -->
+<section id="limitations">
+  <div style="width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;">
+    <p class="section-label" style="text-align:center;margin-bottom:.8rem;font-family:'Inter',sans-serif;font-size:.6rem;letter-spacing:.4em;text-transform:uppercase;">08 · Known Limitations</p>
+    <h2>Where our system <em>falls short</em></h2>
+    <div class="limit-grid">
+      <div class="limit-card c1 reveal">
+        <div class="limit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg></div>
+        <h3>Simulated GPS Traces</h3>
+        <p>All 420 GPS trajectories were generated via correlated random walk simulation seeded from OSM anchor points — not collected from real devices. Density scores may not reflect true visitor movement.</p>
+      </div>
+      <div class="limit-card c2 reveal reveal-delay-1">
+        <div class="limit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/><line x1="7" y1="2" x2="7" y2="7"/><line x1="17" y1="2" x2="17" y2="7"/><line x1="12" y1="2" x2="12" y2="7"/></svg></div>
+        <h3>Limited Sentiment Coverage</h3>
+        <p>YouTube sentiment was collected for only 8 of 24 POIs. Remaining 16 locations lack review signals, reducing retrieval accuracy for queries about less-popular sites.</p>
+      </div>
+      <div class="limit-card c3 reveal reveal-delay-2">
+        <div class="limit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <h3>English-Only Reviews</h3>
+        <p>The cardiffnlp XLM-RoBERTa model was applied to English-filtered comments only. Thai-language and Chinese-language visitor opinions are excluded, skewing sentiment toward Western tourists.</p>
+      </div>
+      <div class="limit-card c4 reveal reveal-delay-3">
+        <div class="limit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>Static Knowledge Snapshot</h3>
+        <p>The FAISS index and sentiment data are not updated in real time. New events, seasonal spikes, or viral trends will not be reflected until the pipeline is re-run manually.</p>
+      </div>
+      <div class="limit-card c5 reveal reveal-delay-4">
+        <div class="limit-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><circle cx="8.5" cy="16" r="1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="16" r="1" fill="currentColor" stroke="none"/></svg></div>
+        <h3>Single LLM Benchmark</h3>
+        <p>Evaluation covers LLaMA 3.1 8B via Groq only. No ablation against larger models — whether GPT-4o or Claude 3 would improve Hit Rate further is untested.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Future Discussion section ════════════════════════════ -->
+<section id="future">
+  <div style="width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;">
+    <p class="section-label" style="text-align:center;margin-bottom:.8rem;font-family:'Inter',sans-serif;font-size:.6rem;letter-spacing:.4em;text-transform:uppercase;">09 · Future Discussion</p>
+    <h2>Expanding to <em>every type</em> of tourism</h2>
+    <p class="sub">How agentic RAG could adapt to different visitor profiles and seasonal rhythms</p>
+    <div class="future-cols">
+      <!-- Tourism types column -->
+      <div>
+        <div class="future-col-title"><span style="display:inline-flex;vertical-align:middle;margin-right:6px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span>Tourism Types</div>
+        <div class="future-item reveal">
+          <div class="future-badge peach"><svg viewBox="0 0 24 24" fill="none" stroke="var(--peach-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
+          <div class="future-text">
+            <h4>Cultural &amp; Heritage Tourism</h4>
+            <p>Personalise temple route recommendations based on real-time crowd density. Pair GNSS data with UNESCO heritage guidelines to flag conservation-risk thresholds at Wat Chedi Luang and Doi Suthep.</p>
+          </div>
+        </div>
+        <div class="future-item reveal reveal-delay-1">
+          <div class="future-badge sage"><svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></div>
+          <div class="future-text">
+            <h4>Eco &amp; Adventure Tourism</h4>
+            <p>Integrate trail occupancy sensors and weather APIs for Doi Inthanon, Mae Rim, and Mae Taeng. Predict carrying-capacity exceedance and reroute trekkers via low-density corridors.</p>
+          </div>
+        </div>
+        <div class="future-item reveal reveal-delay-2">
+          <div class="future-badge butter"><svg viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3v7"/></svg></div>
+          <div class="future-text">
+            <h4>Gastronomic Tourism</h4>
+            <p>Mine Thai-language Wongnai, Google Maps, and TikTok reviews alongside YouTube. Build a separate "food-focused" vector store to answer queries like "least-crowded authentic khao soi spots".</p>
+          </div>
+        </div>
+        <div class="future-item reveal reveal-delay-3">
+          <div class="future-badge sky"><svg viewBox="0 0 24 24" fill="none" stroke="#4a90b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7c-2 2-3 4-3 6h6c0-2-1-4-3-6z"/><path d="M7 13c-1 1-2 3-2 4h14c0-1-1-3-2-4"/><line x1="9" y1="19" x2="9" y2="22"/><line x1="15" y1="19" x2="15" y2="22"/></svg></div>
+          <div class="future-text">
+            <h4>Wellness &amp; Meditation Tourism</h4>
+            <p>Track retreat occupancy at Wat Suan Dok monk-chat programs and Doi Pui wellness centres. Surface sentiment from long-stay visitors rather than day-trippers to capture deeper experience quality.</p>
+          </div>
+        </div>
+        <div class="future-item reveal reveal-delay-4">
+          <div class="future-badge lavender"><svg viewBox="0 0 24 24" fill="none" stroke="#7b6fa0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="future-text">
+            <h4>Community-Based Tourism</h4>
+            <p>Partner with Chiang Mai CBT networks to ingest visitor booking data and local household income signals — enabling the agent to recommend high-impact, low-density village experiences.</p>
+          </div>
+        </div>
+      </div>
+      <!-- Seasons column -->
+      <div>
+        <div class="future-col-title"><span style="display:inline-flex;vertical-align:middle;margin-right:6px;"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z"/></svg></span>Seasonal Dynamics</div>
+        <div class="future-item reveal">
+          <div class="future-badge peach"><svg viewBox="0 0 24 24" fill="none" stroke="var(--peach-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></svg></div>
+          <div class="future-text">
+            <h4>Cool Season · Nov – Feb</h4>
+            <p>Peak tourist influx — overflow risk at top-8 POIs is highest. The system should issue proactive congestion alerts and suggest time-slot booking for Doi Suthep and Sunday Walking Street.</p>
+          </div>
+        </div>
+        <div class="future-item reveal reveal-delay-1">
+          <div class="future-badge butter"><svg viewBox="0 0 24 24" fill="none" stroke="#b8860b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>
+          <div class="future-text">
+            <h4>Hot Season · Mar – May</h4>
+            <p>Smoke-haze from agricultural burning (PM2.5 spikes) dramatically affects outdoor experience. Future agent tools should query AQI APIs and recommend indoor alternatives like MAYA or Central Festival.</p>
+          </div>
+        </div>
+        <div class="future-item reveal reveal-delay-2">
+          <div class="future-badge sage"><svg viewBox="0 0 24 24" fill="none" stroke="var(--sage-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 17.58A5 5 0 0 0 18 8h-1.26A8 8 0 1 0 4 16.25"/><line x1="8" y1="19" x2="8" y2="21"/><line x1="8" y1="13" x2="8" y2="15"/><line x1="16" y1="19" x2="16" y2="21"/><line x1="16" y1="13" x2="16" y2="15"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="12" y1="15" x2="12" y2="17"/></svg></div>
+          <div class="future-text">
+            <h4>Rainy / Green Season · Jun – Oct</h4>
+            <p>Visitor numbers drop — an opportunity to promote off-peak cultural immersion. RAG retrieval should surface local festival events (Asanha Bucha, Ok Phansa) to attract niche travellers.</p>
+          </div>
+        </div>
+        <div class="future-item reveal reveal-delay-3">
+          <div class="future-badge coral"><svg viewBox="0 0 24 24" fill="none" stroke="#c0627a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h6l3 7H6z"/><path d="M6 9c0 3 2.5 6 6 7 3.5-1 6-4 6-7"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="12" y1="16" x2="12" y2="22"/></svg></div>
+          <div class="future-text">
+            <h4>Yi Peng &amp; Loy Krathong · Nov</h4>
+            <p>Extraordinary density spike around the old city moat. The agent could deploy a short-term crowd-surge model trained on historical GPS surges to guide safe viewing positions and exit routes.</p>
+          </div>
+        </div>
+        <div class="future-item reveal reveal-delay-4">
+          <div class="future-badge sky"><svg viewBox="0 0 24 24" fill="none" stroke="#4a90b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
+          <div class="future-text">
+            <h4>Real-Time Seasonal Index</h4>
+            <p>Combine TAT tourism statistics, Google Trends queries ("Chiang Mai travel"), and flight search volume into a seasonal demand index — letting the agent self-calibrate density thresholds year-round.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Conclusion section ════════════════════════════════════ -->
+<section id="closing">
+  <div class="hero-orb orb1" style="opacity:.5;"></div>
+  <div class="hero-orb orb2" style="opacity:.5;"></div>
+  <div class="closing-inner">
+    <p class="section-label">10 · Conclusion</p>
+    <h2>Three research questions.<br><em>One agentic answer.</em></h2>
+    <div class="rq-grid">
+      <div class="rq-card reveal">
+        <div class="rq-num">Research Question 1</div>
+        <div class="rq-q">"Can agentic RAG accurately answer overtourism-related questions?"</div>
+        <div class="rq-a"><span class="icon" style="margin-right:.2rem;"><svg viewBox="0 0 24 24" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg></span>Sentiment Hit Rate @5 = 0.750 · Overall = 0.789</div>
+      </div>
+      <div class="rq-card reveal reveal-delay-1">
+        <div class="rq-num">Research Question 2</div>
+        <div class="rq-q">"Does GNSS density improve crowd congestion answers?"</div>
+        <div class="rq-a"><span class="icon" style="margin-right:.2rem;"><svg viewBox="0 0 24 24" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg></span>Crowd congestion category Hit Rate @5 = 0.800 · highest category</div>
+      </div>
+      <div class="rq-card reveal reveal-delay-2">
+        <div class="rq-num">Research Question 3</div>
+        <div class="rq-q">"What is the token cost of agentic RAG vs vanilla RAG?"</div>
+        <div class="rq-a"><span class="icon" style="margin-right:.2rem;"><svg viewBox="0 0 24 24" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg></span>1.7x tokens · $0.000037/query · within free tier</div>
+      </div>
+    </div>
+    <div class="team-credits">
+      <div class="team-credit">Boonyoros Pheechaphuth · LS2525207</div>
+      <div class="team-credit">Teh Bismin · LS2525222</div>
+    </div>
+    <p class="course-note">AI & Large Models Final Project · Agentic RAG for Smart Tourism · Chiang Mai, Thailand</p>
+  </div>
+</section>
+
+<script>
+/* ──────────────────────────────────────────────
+   Original functions: POI cards, sentiment, metrics, etc.
+   (all logic unchanged, only UI text translated)
+   ────────────────────────────────────────────── */
+const IC = {
+  mapPin:'<span class="icon"><svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>',
+  clock:'<span class="icon"><svg viewBox="0 0 24 24" width="13" height="13"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>',
+  alertCircle:'<span class="icon" style="color:#c0392b"><svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>',
+  msgSquare:'<span class="icon"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>',
+  thumbsUp:'<span class="icon" style="color:#40916c"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg></span>',
+  alertTri:'<span class="icon" style="color:#e07b39"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>',
+  building:'<span class="icon"><svg viewBox="0 0 24 24" width="14" height="14"><rect x="3" y="10" width="18" height="11"/><path d="M3 10V6h3V3h3v3h3V3h3v3h3v4"/><line x1="9" y1="21" x2="9" y2="15"/><line x1="15" y1="21" x2="15" y2="15"/></svg></span>',
+  check:'<span class="icon" style="color:#40916c"><svg viewBox="0 0 24 24" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg></span>',
+  gear:'<span class="tool-icon"><svg viewBox="0 0 24 24" width="14" height="14"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>',
+};
+
+/* POI data (from config_pois.json) */
+const POIS = [
+  {name:"Sunday Walking Street",cat:"Market / Walking Street",density:0.92,risk:"very_high",dwell:90,tracks:420,lat:18.7882,lng:98.9853,time:"17:00–22:00",sentiment:57,reviews:7},
+  {name:"Wat Doi Suthep",cat:"Temple / Heritage",density:0.88,risk:"high",dwell:60,tracks:320,lat:18.8048,lng:98.9220,time:"07:00–10:00",sentiment:50,reviews:6},
+  {name:"Wat Phra Singh",cat:"Temple / Heritage",density:0.85,risk:"high",dwell:45,tracks:280,lat:18.7878,lng:98.9836,time:"09:00–12:00",sentiment:57,reviews:7},
+  {name:"Wat Chedi Luang",cat:"Temple / Heritage",density:0.80,risk:"high",dwell:40,tracks:250,lat:18.7874,lng:98.9854,time:"08:00–11:00",sentiment:75,reviews:4},
+  {name:"Nimmanhaemin Road",cat:"Café & Dining",density:0.75,risk:"medium",dwell:120,tracks:350,lat:18.7975,lng:98.9665,time:"18:00–22:00",sentiment:80,reviews:5},
+  {name:"Night Bazaar",cat:"Market / Shopping",density:0.78,risk:"high",dwell:75,tracks:290,lat:18.7827,lng:99.0000,time:"18:00–23:00",sentiment:75,reviews:4},
+  {name:"Warorot Market",cat:"Local Market",density:0.70,risk:"medium",dwell:50,tracks:200,lat:18.7921,lng:98.9960,time:"06:00–18:00",sentiment:65,reviews:4},
+  {name:"Tha Phae Gate",cat:"Historic Gate",density:0.72,risk:"medium",dwell:30,tracks:260,lat:18.7884,lng:98.9937,time:"09:00–20:00",sentiment:100,reviews:4},
+  {name:"Chiang Mai Zoo",cat:"Zoo / Family",density:0.68,risk:"medium",dwell:150,tracks:210,lat:18.8036,lng:98.9518,time:"09:00–17:00",sentiment:72,reviews:3},
+  {name:"Doi Inthanon National Park",cat:"National Park",density:0.65,risk:"medium",dwell:180,tracks:180,lat:18.5877,lng:98.4866,time:"07:00–16:00",sentiment:66,reviews:6},
+  {name:"Central Festival Chiang Mai",cat:"Shopping Mall",density:0.65,risk:"medium",dwell:120,tracks:195,lat:18.7993,lng:98.9697,time:"11:00–21:00",sentiment:62,reviews:3},
+  {name:"MAYA Lifestyle Shopping Center",cat:"Shopping Mall",density:0.70,risk:"medium",dwell:90,tracks:230,lat:18.7970,lng:98.9720,time:"11:00–21:00",sentiment:68,reviews:3},
+  {name:"Wat Suan Dok",cat:"Temple / Heritage",density:0.60,risk:"low",dwell:35,tracks:150,lat:18.7872,lng:98.9696,time:"08:00–17:00",sentiment:72,reviews:3},
+  {name:"Royal Park Rajapruek",cat:"Botanical Garden",density:0.60,risk:"low",dwell:120,tracks:160,lat:18.7545,lng:98.9325,time:"08:00–18:00",sentiment:70,reviews:3},
+  {name:"Wat Umong",cat:"Temple / Meditation",density:0.52,risk:"low",dwell:50,tracks:140,lat:18.7797,lng:98.9567,time:"08:00–17:00",sentiment:70,reviews:4},
+  {name:"Chiang Mai Night Safari",cat:"Wildlife / Night",density:0.55,risk:"low",dwell:120,tracks:130,lat:18.7402,lng:98.9750,time:"18:00–23:00",sentiment:68,reviews:3},
+  {name:"Doi Pui Hmong Village",cat:"Cultural Village",density:0.55,risk:"low",dwell:75,tracks:120,lat:18.8230,lng:98.9090,time:"08:00–17:00",sentiment:66,reviews:3},
+  {name:"Wat Chiang Man",cat:"Temple / Heritage",density:0.55,risk:"low",dwell:30,tracks:130,lat:18.7937,lng:98.9870,time:"08:00–17:00",sentiment:73,reviews:3},
+  {name:"Baan Tawai Wood Carving Village",cat:"Handicraft Village",density:0.58,risk:"low",dwell:90,tracks:145,lat:18.7030,lng:98.9500,time:"08:00–17:00",sentiment:74,reviews:3},
+  {name:"Ang Kaew Reservoir",cat:"Park / Leisure",density:0.50,risk:"low",dwell:45,tracks:120,lat:18.7580,lng:98.9570,time:"06:00–18:00",sentiment:68,reviews:3},
+  {name:"Wat Doi Kham",cat:"Temple / Heritage",density:0.45,risk:"low",dwell:40,tracks:110,lat:18.7510,lng:98.9290,time:"08:00–17:00",sentiment:70,reviews:3},
+  {name:"Mae Kampong Village",cat:"Eco-tourism",density:0.48,risk:"low",dwell:180,tracks:90,lat:18.6700,lng:99.1000,time:"All day",sentiment:80,reviews:3},
+  {name:"San Kamphaeng Hot Springs",cat:"Hot Spring",density:0.42,risk:"low",dwell:120,tracks:80,lat:18.7450,lng:99.1500,time:"08:00–18:00",sentiment:78,reviews:3},
+  {name:"Chiang Mai Art & Cultural Center",cat:"Museum",density:0.40,risk:"low",dwell:60,tracks:85,lat:18.7885,lng:98.9860,time:"09:00–17:00",sentiment:68,reviews:3},
+];
+
+/* Sentiment data (from step1_youtube.py) */
+const SENTIMENT_POIS = [
+  {name:"Sunday Walking Street",pos:71,neu:18,neg:11},
+  {name:"Wat Doi Suthep",pos:65,neu:20,neg:15},
+  {name:"Wat Phra Singh",pos:68,neu:18,neg:14},
+  {name:"Wat Chedi Luang",pos:60,neu:22,neg:18},
+  {name:"Nimmanhaemin Road",pos:74,neu:16,neg:10},
+  {name:"Night Bazaar",pos:55,neu:25,neg:20},
+  {name:"Tha Phae Gate",pos:70,neu:20,neg:10},
+  {name:"Doi Inthanon National Park",pos:78,neu:14,neg:8},
+];
+
+/* Evaluation data */
+const HIT_RATES = [
+  {k:"@1",val:.526,label:"Hit Rate @1"},
+  {k:"@3",val:.684,label:"Hit Rate @3"},
+  {k:"@5",val:.789,label:"Hit Rate @5 ✓"},
+  {k:"MRR",val:.712,label:"MRR"},
+];
+const CAT_RATES = [
+  {cat:"Crowd / GPS",rate:.800},{cat:"Travel tips",rate:.833},
+  {cat:"Seasonality",rate:.800},{cat:"Research",rate:.875},
+  {cat:"Sentiment",rate:.750},{cat:"Food",rate:.667},
+];
+
+/* Demo scenarios (English) */
+const DEMO_SCENARIOS = {
+  "Is Wat Doi Suthep crowded right now?":[
+    {type:"user",text:"Is Wat Doi Suthep crowded right now?"},
+    {type:"tool",text:'get_hotspot("Wat Doi Suthep")'},
+    {type:"bot",text:`${IC.mapPin} <strong>Wat Doi Suthep</strong><br>GPS density: <strong>0.88 / 1.00</strong> · Crowding level: <strong>High density</strong><br>Average dwell: 60 min · 320 traces · Peak hours: 07:00–10:00<br><br>${IC.alertCircle} Overtourism risk: <strong>High</strong>. Consider visiting outside peak hours.`},
+  ],
+  "Which temple is least crowded?":[
+    {type:"user",text:"Which temple is least crowded?"},
+    {type:"tool",text:'search_poi("temple")'},
+    {type:"tool",text:'rag_retrieve("Chiang Mai low crowd temple")'},
+    {type:"bot",text:`${IC.building} Less crowded temple recommendations:<br><strong>1. Wat Doi Kham</strong> — density 0.45 (low) · mostly local devotees<br><strong>2. Wat Umong</strong> — density 0.52 (low) · forest meditation temple<br><strong>3. Wat Chiang Man</strong> — density 0.55 (low) · oldest temple, built 1296<br><br>${IC.check} These three are comfortable to visit most of the time.`},
+  ],
+  "What do visitors say about Night Bazaar?":[
+    {type:"user",text:"What do visitors say about Night Bazaar?"},
+    {type:"tool",text:'get_sentiment("Night Bazaar")'},
+    {type:"tool",text:'get_hotspot("Night Bazaar")'},
+    {type:"bot",text:`${IC.msgSquare} <strong>Night Bazaar Sentiment Report</strong><br>Analyzed 290 trace points · 55% positive / 25% neutral / 20% negative<br><br>${IC.thumbsUp} Main praise: <em>'Despite commercialization, the bazaar retains charm'</em><br>${IC.alertTri} Main complaints: <em>'Aggressive touts near main entrance'</em><br><br>GPS density: 0.78 · High risk · Best visited after 21:30.`},
+  ],
+};
+
+/* Render functions (same logic, just using translated data) */
+function renderPOIs(filter='all'){
+  const grid = document.getElementById('poiGrid');
+  grid.innerHTML = '';
+  const filtered = filter==='all' ? POIS : POIS.filter(p=>p.risk===filter);
+  filtered.forEach((poi,i)=>{
+    const pct = Math.round(poi.density*100);
+    let riskLabel = '';
+    if(poi.risk === 'very_high') riskLabel = 'Very high risk';
+    else if(poi.risk === 'high') riskLabel = 'High risk';
+    else if(poi.risk === 'medium') riskLabel = 'Medium risk';
+    else riskLabel = 'Low risk';
+    const card = document.createElement('div');
+    card.className = `poi-card ${poi.risk}`;
+    card.style.animationDelay = `${i*.05}s`;
+    card.innerHTML = `
+      <div class="poi-card-top">
+        <div class="poi-name">${poi.name}</div>
+        <div class="risk-badge ${poi.risk}">${riskLabel}</div>
+      </div>
+      <div class="poi-category">${poi.cat}</div>
+      <div class="density-bar-wrap">
+        <div class="density-label">
+          <span>GPS Density</span>
+          <span>${poi.density.toFixed(2)}</span>
+        </div>
+        <div class="density-bar">
+          <div class="density-fill" style="width:0%" data-width="${pct}%"></div>
+        </div>
+      </div>
+      <div class="poi-meta">
+        <span>${IC.clock} ${poi.dwell} min</span>
+        <span>${IC.mapPin} ${poi.tracks} traces</span>
+      </div>`;
+    grid.appendChild(card);
+    setTimeout(()=>{
+      const fill = card.querySelector('.density-fill');
+      if(fill) fill.style.width = fill.dataset.width;
+    }, 100 + i*40);
+  });
+}
+
+function filterPOIs(risk,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPOIs(risk);
+}
+
+function renderSentiment(){
+  const list = document.getElementById('sentimentList');
+  SENTIMENT_POIS.forEach(poi=>{
+    const el = document.createElement('div');
+    el.className = 'poi-sent-item';
+    el.innerHTML = `
+      <div class="poi-sent-name">${poi.name}</div>
+      <div class="mini-bars">
+        <div class="mini-bar-pos" style="flex:${poi.pos}"></div>
+        <div class="mini-bar-neu" style="flex:${poi.neu}"></div>
+        <div class="mini-bar-neg" style="flex:${poi.neg}"></div>
+      </div>
+      <div class="mini-pcts">
+        <span class="pct-pos">+${poi.pos}%</span>
+        <span class="pct-neu">~${poi.neu}%</span>
+        <span class="pct-neg">-${poi.neg}%</span>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+function renderHitRates(){
+  const wrap = document.getElementById('hitRates');
+  HIT_RATES.forEach(hr=>{
+    const pct = Math.round(hr.val*100);
+    wrap.innerHTML += `
+      <div class="hit-row">
+        <div class="hit-k">${hr.k}</div>
+        <div class="hit-bar-wrap">
+          <div class="hit-bar" style="width:0%" data-width="${pct}%"></div>
+        </div>
+        <div class="hit-val">${hr.val.toFixed(3)}</div>
+      </div>`;
+  });
+  setTimeout(()=>{
+    document.querySelectorAll('.hit-bar').forEach(b=>{ b.style.width = b.dataset.width; });
+  },500);
+}
+
+function renderCatBars(){
+  const wrap = document.getElementById('catBars');
+  CAT_RATES.forEach(c=>{
+    const pct = Math.round(c.rate*100);
+    const col = c.rate>=.80?'var(--jade2)':c.rate>=.75?'var(--gold)':'var(--saffron)';
+    wrap.innerHTML += `
+      <div>
+        <div style="font-size:.65rem;color:#666;margin-bottom:.4rem;letter-spacing:.08em;">${c.cat}</div>
+        <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden;margin-bottom:.3rem;">
+          <div style="height:100%;width:${pct}%;background:${col};border-radius:4px;transition:width 1.2s ease;"></div>
+        </div>
+        <div style="font-size:.7rem;font-weight:700;color:${col};">${c.rate.toFixed(3)}</div>
+      </div>`;
+  });
+}
+
+const QUERY_LABELS = Object.keys(DEMO_SCENARIOS);
+let chatRunning = false;
+
+function renderQueryChips(){
+  const wrap = document.getElementById('queryChips');
+  QUERY_LABELS.forEach(q=>{
+    const btn = document.createElement('button');
+    btn.className = 'query-chip';
+    btn.textContent = q;
+    btn.onclick = ()=>runDemo(q,btn);
+    wrap.appendChild(btn);
+  });
+}
+
+async function runDemo(query,btn){
+  if(chatRunning) return;
+  chatRunning = true;
+  document.querySelectorAll('.query-chip').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  const body = document.getElementById('chatBody');
+  body.innerHTML = `<div class="msg bot">สวัสดีครับ! I'm your Chiang Mai travel assistant.<br>Ask me about crowd density, visitor reviews, or place recommendations. ${IC.building}</div>`;
+
+  const steps = DEMO_SCENARIOS[query];
+  for(const step of steps){
+    await delay(700);
+    if(step.type==='user'){
+      body.innerHTML += `<div class="msg user">${step.text}</div>`;
+    } else if(step.type==='tool'){
+      const t = document.createElement('div');
+      t.className='typing';
+      t.innerHTML='<span></span><span></span><span></span>';
+      body.appendChild(t);
+      body.scrollTop = body.scrollHeight;
+      await delay(800);
+      t.remove();
+      body.innerHTML += `<div class="tool-call">${IC.gear}${step.text}</div>`;
+    } else {
+      const t = document.createElement('div');
+      t.className='typing';
+      t.innerHTML='<span></span><span></span><span></span>';
+      body.appendChild(t);
+      body.scrollTop = body.scrollHeight;
+      await delay(1200);
+      t.remove();
+      body.innerHTML += `<div class="msg bot">${step.text}</div>`;
+    }
+    body.scrollTop = body.scrollHeight;
+  }
+  chatRunning = false;
+}
+
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+function highlightPipe(el){
+  document.querySelectorAll('.pipe-step').forEach(s=>s.classList.remove('active-step'));
+  el.classList.add('active-step');
+}
+
+function showBaselineCase(n, btn){
+  for(let i=0;i<3;i++){
+    const c=document.getElementById('baseline-case-'+i);
+    if(c) c.style.display = i===n ? 'flex' : 'none';
+    if(i===0 && n===0 && c) c.style.flexDirection='column';
+  }
+  document.querySelectorAll('.baseline-tab-btn').forEach((b,i)=>{
+    b.classList.toggle('active', i===n);
+  });
+}
+
+/* Cursor & interactions */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx-6+'px'; cursor.style.top=my-6+'px';
+});
+function animRing(){
+  rx += (mx-rx-20)*.12; ry += (my-ry-20)*.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
+animRing();
+document.querySelectorAll('a,button,.poi-card,.filter-btn,.pipe-step,.rq-card,.stat-card,.map-poi-row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)'; ring.style.transform='scale(1.5)';});
+  el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)'; ring.style.transform='scale(1)';});
+});
+
+/* Scroll reveal & nav dots */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+const sections = ['hero','problem','pipeline','density','map-section','sentiment','metrics','demo','baseline','limitations','future','closing'];
+const dots = document.querySelectorAll('.nav-dot');
+dots.forEach((dot,i)=>{
+  const scrollTo = ()=>{ const el=document.getElementById(sections[i]); if(el) el.scrollIntoView({behavior:'smooth'}); };
+  dot.addEventListener('click', scrollTo);
+  dot.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); scrollTo(); } });
+});
+const secObs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const idx = sections.indexOf(e.target.id);
+      dots.forEach(d=>d.classList.remove('active'));
+      if(idx>=0) dots[idx].classList.add('active');
+      if(e.target.id==='metrics'){
+        setTimeout(()=>{
+          document.querySelectorAll('.hit-bar').forEach(b=>{ b.style.width=b.dataset.width; });
+        },300);
+      }
+    }
+  });
+},{threshold:.4});
+sections.forEach(id=>{ const el=document.getElementById(id); if(el) secObs.observe(el); });
+
+/* POI images & map logic unchanged */
+const POI_IMAGES = {
+  "Sunday Walking Street": [
+    "https://image-tc.galaxy.tf/wijpeg-1563bag21idvzcvn77jl1irr0/sunday-walking-street-market-chiang-mai-thailand-2013-01-13-18-57-17_standard.jpg?crop=70%2C0%2C1060%2C795",
+    "https://apis.airportthai.co.th/microsite/images/post/ckeditor/2021-12-15-16-06-404-shutterstock_316883423.jpg",
+    "https://aramblingunicorn.com/wp-content/uploads/2022/12/Chiang-Mai-Sunday-Market-25.jpg"
+  ],
+  "Wat Doi Suthep": [
+    "https://www.tripsavvy.com/thmb/kN98fxIp48KGDa_kqSiCw8CWpoU=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/DoiSuthepPano1-1-5c1406eb46e0fb000168c8ba.jpg",
+    "https://i1.wp.com/letravels.com/wp-content/uploads/2018/11/img_6243-1.jpg?fit=1920%2C1280&ssl=1",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4fi3PgfWuWnkiLyR8ycxh_LqSTZpJQsZpZw&s"
+  ],
+  "Wat Phra Singh": [
+    "https://cdn1.citylife.group/tat2/wp-content/uploads/2022/05/%E0%B8%A7%E0%B8%B1%E0%B8%94%E0%B8%9E%E0%B8%A3%E0%B8%B0%E0%B8%AA%E0%B8%B4%E0%B8%87%E0%B8%AB%E0%B9%8C2-Wat-Pra-SIng2.jpg",
+    "https://www.placesofjuma.com/wp-content/uploads/2019/10/Chiang-Mai-17-scaled.jpg",
+    "https://mychiangmaitour.com/wp-content/uploads/2018/02/wat_phra_singh_chiang_rai01.jpg"
+  ],
+  "Wat Chedi Luang": [
+    "https://images.squarespace-cdn.com/content/v1/5438e2c6e4b0b18459a8ca06/1593080023687-2WNKQ64LB63VEV4UMVZ4/GTJ-2020-0625-39.jpg",
+    "https://images.squarespace-cdn.com/content/v1/5438e2c6e4b0b18459a8ca06/1593080275991-VH2IOY4XV4ZHMERVAQL0/GTJ-2020-0625-84.jpg",
+    "https://www.asiakingtravel.com/cuploads/files/wat-chedi-luang-3.jpg"
+  ],
+  "Nimmanhaemin Road": [
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_uoVw_dkFteD5rDaAPbCre3jyFWLVNVOOUA&s",
+    "https://www.mychiangmaitravel.com/wp-content/uploads/2017/07/nimmanhaemin-road01.jpg",
+    "https://goop-img.com/wp-content/uploads/2018/11/Nimmanhaemin-Road.jpg"
+  ],
+  "Night Bazaar": [
+    "https://api.tourismthailand.org/upload/live/business_content_thumbnail/12595/P06002139.jpeg",
+    "https://travelersanddreamers.com/wp-content/uploads/2023/05/chiang-mai-night-market-2-1024x678.jpg",
+    "https://images.trvl-media.com/place/6216344/705d1da8-c0bf-4e92-9778-6633b906d864.jpg"
+  ],
+  "Tha Phae Gate": [
+    "https://www.thainationalparks.com/img/package/2020/08/31/397017/two-chedis-w-900.jpg",
+    "https://www.pelago.com/img/products/TH-Thailand/doi-inthanon-national-park-village-tour/0404-0622_bharath-mohan-2cjonwjcmjm-unsplash.jpg",
+    "https://www.thainationalparks.com/img/poi/2019/12/10/394794/doi-inthanon-chiang-mai-thailand-sea-of-mist-w-900.jpg"
+  ],
+  "Doi Inthanon National Park": [
+    "https://www.thainationalparks.com/img/package/2020/08/31/397017/two-chedis-w-900.jpg",
+    "https://www.pelago.com/img/products/TH-Thailand/doi-inthanon-national-park-village-tour/0404-0622_bharath-mohan-2cjonwjcmjm-unsplash.jpg",
+    "https://www.thainationalparks.com/img/poi/2019/12/10/394794/doi-inthanon-chiang-mai-thailand-sea-of-mist-w-900.jpg"
+  ]
+};
+const DEFAULT_IMAGES = [
+  "https://itinari-images.s3.eu-west-1.amazonaws.com/activity/images/original/4e65281a-0d2f-4b3f-876b-1350621205fd-efesenko.jpg",
+  "https://storage.googleapis.com/tagthai-prd-content/Tha_Phae_Chiang_Mai_Activities_29fc240904/Tha_Phae_Chiang_Mai_Activities_29fc240904.jpg",
+  "https://thethaiger.com/wp-content/uploads/2024/08/Tha-Phae-Gate-1.jpg"
+];
+
+function showPOIPreview(poiIdx) {
+  const poi = POIS[poiIdx];
+  if (!poi) return;
+  const section = document.getElementById('poi-preview-section');
+  const titleEl = document.getElementById('poi-preview-title');
+  const titleEnEl = document.getElementById('poi-preview-title-en');
+  const img0 = document.getElementById('poi-img-0');
+  const img1 = document.getElementById('poi-img-1');
+  const img2 = document.getElementById('poi-img-2');
+  titleEl.textContent = poi.name;
+  titleEnEl.textContent = poi.cat;
+  const images = POI_IMAGES[poi.name] || DEFAULT_IMAGES;
+  img0.src = images[0] || DEFAULT_IMAGES[0]; img0.alt = poi.name + ' – view 1';
+  img1.src = images[1] || DEFAULT_IMAGES[1]; img1.alt = poi.name + ' – view 2';
+  img2.src = images[2] || DEFAULT_IMAGES[2]; img2.alt = poi.name + ' – view 3';
+  section.classList.remove('active');
+  void section.offsetWidth;
+  section.classList.add('active');
+}
+
+let map;
+let markersList = [];
+
+function initInteractiveMap() {
+  map = L.map('poi-map').setView([18.7883, 98.9853], 13);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> & CartoDB',
+    subdomains: 'abcd',
+    maxZoom: 19,
+    minZoom: 10
+  }).addTo(map);
+
+  /* ── Scale bar ── */
+  L.control.scale({ metric: true, imperial: false, position: 'bottomleft', maxWidth: 120 }).addTo(map);
+
+  /* ── North Arrow ── */
+  const NorthArrow = L.Control.extend({
+    options: { position: 'bottomright' },
+    onAdd() {
+      const div = L.DomUtil.create('div', 'leaflet-control-north-arrow');
+      div.title = 'North';
+      div.innerHTML = `<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Outer ring -->
+        <circle cx="20" cy="20" r="19" fill="white" stroke="rgba(244,162,97,0.45)" stroke-width="1.5"/>
+        <!-- N label (top, inside circle) -->
+        <text x="20" y="10" text-anchor="middle" dominant-baseline="middle"
+          font-family="Inter,sans-serif" font-size="8" font-weight="800" fill="#c0392b">N</text>
+        <!-- North needle (red) -->
+        <polygon points="20,13 22.5,20 20,18 17.5,20" fill="#c0392b"/>
+        <!-- South needle (grey) -->
+        <polygon points="20,27 22.5,20 20,22 17.5,20" fill="#8B7D72"/>
+        <!-- Center dot -->
+        <circle cx="20" cy="20" r="2.2" fill="white" stroke="#2A2620" stroke-width="1.2"/>
+      </svg>`;
+      L.DomEvent.disableClickPropagation(div);
+      return div;
+    }
+  });
+  new NorthArrow().addTo(map);
+
+  /* ── Spread overlapping markers (force-directed, 15 passes) ── */
+  const MIN_DIST = 0.004;
+  const positions = POIS.map(p => ({ lat: p.lat, lng: p.lng }));
+  for (let pass = 0; pass < 15; pass++) {
+    let moved = false;
+    for (let i = 0; i < positions.length; i++) {
+      for (let j = i + 1; j < positions.length; j++) {
+        const dlat = positions[j].lat - positions[i].lat;
+        const dlng = positions[j].lng - positions[i].lng;
+        const dist = Math.sqrt(dlat * dlat + dlng * dlng);
+        if (dist < MIN_DIST) {
+          moved = true;
+          const push = (MIN_DIST - dist) / 2 + 0.0001;
+          if (dist < 1e-9) {
+            const angle = (i * 2 * Math.PI) / positions.length;
+            positions[i].lat -= Math.sin(angle) * push;
+            positions[i].lng -= Math.cos(angle) * push;
+            positions[j].lat += Math.sin(angle) * push;
+            positions[j].lng += Math.cos(angle) * push;
+          } else {
+            const nx = dlat / dist, ny = dlng / dist;
+            positions[i].lat -= nx * push;
+            positions[i].lng -= ny * push;
+            positions[j].lat += nx * push;
+            positions[j].lng += ny * push;
+          }
+        }
+      }
+    }
+    if (!moved) break;
+  }
+
+  function getColorByDensity(density) {
+    if (density >= 0.8) return '#e03939';
+    if (density >= 0.6) return '#c8972a';
+    return '#2d6a4f';
+  }
+  POIS.forEach((poi, idx) => {
+    const color = getColorByDensity(poi.density);
+    const radius = 8 + Math.floor(poi.density * 8);
+    const pos = positions[idx];
+    const circleMarker = L.circleMarker([pos.lat, pos.lng], {
+      radius: radius,
+      fillColor: color,
+      color: '#fff',
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.85
+    });
+    const popupContent = `
+      <div class="poi-popup">
+        <div class="poi-popup-name">${poi.name}</div>
+        <div class="poi-popup-en">${poi.cat}</div>
+        <div class="poi-popup-grid">
+          <div class="poi-popup-stat">
+            <div class="poi-popup-val" style="color:${color}">${Math.round(poi.density*100)}%</div>
+            <div class="poi-popup-lbl">GPS Density</div>
+          </div>
+          <div class="poi-popup-stat">
+            <div class="poi-popup-val">${poi.dwell} min</div>
+            <div class="poi-popup-lbl">Avg dwell</div>
+          </div>
+          <div class="poi-popup-stat">
+            <div class="poi-popup-val">${poi.sentiment || '—'}%</div>
+            <div class="poi-popup-lbl">Positive</div>
+          </div>
+          <div class="poi-popup-stat">
+            <div class="poi-popup-val">${poi.time || '—'}</div>
+            <div class="poi-popup-lbl">Peak hours</div>
+          </div>
+        </div>
+      </div>
+    `;
+    circleMarker.bindPopup(popupContent);
+    circleMarker.addTo(map);
+    markersList.push({ marker: circleMarker, idx: idx, data: poi, pos: pos });
+    circleMarker.on('click', () => { showPOIPreview(idx); });
+    if (poi.density >= 0.8) {
+      L.circleMarker([pos.lat, pos.lng], {
+        radius: radius + 5,
+        fillColor: 'transparent',
+        color: color,
+        weight: 1.5,
+        opacity: 0.4,
+        fillOpacity: 0,
+        interactive: false
+      }).addTo(map);
+    }
+  });
+  const poiRows = document.querySelectorAll('.map-poi-row');
+  poiRows.forEach((row, idx) => {
+    row.setAttribute('tabindex', '0');
+    row.setAttribute('role', 'button');
+    const activateRow = () => {
+      const poiIdx = parseInt(row.getAttribute('data-poi-idx'), 10);
+      if (!isNaN(poiIdx) && markersList[poiIdx]) {
+        const targetMarker = markersList[poiIdx];
+        const spreadPos = positions[poiIdx];
+        map.flyTo([spreadPos.lat, spreadPos.lng], 15, { duration: 1.2 });
+        setTimeout(() => targetMarker.marker.openPopup(), 1300);
+        poiRows.forEach(r => r.style.background = '');
+        row.style.background = 'rgba(244,162,97,.15)';
+        showPOIPreview(poiIdx);
+      }
+    };
+    row.addEventListener('click', activateRow);
+    row.addEventListener('keydown', e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); activateRow(); } });
+  });
+}
+
+renderPOIs();
+renderSentiment();
+renderHitRates();
+renderCatBars();
+renderQueryChips();
+
+if (typeof L !== 'undefined') {
+  setTimeout(initInteractiveMap, 300);
+} else {
+  window.addEventListener('load', () => setTimeout(initInteractiveMap, 500));
+}
+</script>
+</body>
+</html>
