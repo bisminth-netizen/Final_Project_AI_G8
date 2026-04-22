@@ -1,0 +1,620 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9849,
+          18.7871
+        ]
+      },
+      "properties": {
+        "name": "Wat Phra Singh",
+        "name_en": "Wat Phra Singh",
+        "category": "Temple / Heritage",
+        "description": "Chiang Mai's most revered temple, housing the Phra Singh Buddha image. Established in 1345 AD, the Lanna-style architecture draws both devout pilgrims and cultural tourists.",
+        "gps_density": 0.94,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 43.7,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "09:00–12:00, 15:00–17:00",
+        "overtourism_risk": "high",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9862,
+          18.7864
+        ]
+      },
+      "properties": {
+        "name": "Wat Chedi Luang",
+        "name_en": "Wat Chedi Luang",
+        "category": "Temple / Heritage",
+        "description": "A 15th-century temple dominated by a partially ruined 60-metre chedi. The evening monk-chat programme makes it popular well into the night.",
+        "gps_density": 0.92,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 38.7,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "08:00–11:00, 17:00–20:00",
+        "overtourism_risk": "high",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9216,
+          18.8047
+        ]
+      },
+      "properties": {
+        "name": "Wat Doi Suthep",
+        "name_en": "Wat Doi Suthep",
+        "category": "Temple / Heritage",
+        "description": "Iconic mountaintop temple visible from the city below. The 309-step Naga staircase and panoramic terrace make it Chiang Mai's most photographed landmark.",
+        "gps_density": 0.952,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 63.0,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "07:00–10:00, 15:00–18:00",
+        "overtourism_risk": "high",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9951,
+          18.7869
+        ]
+      },
+      "properties": {
+        "name": "Sunday Walking Street",
+        "name_en": "Sunday Walking Street (Wualai Rd)",
+        "category": "Market / Walking Street",
+        "description": "Wualai Road transforms every Sunday into a kilometre-long market of crafts, street food, and live performance. Peak density rivals any market in Southeast Asia.",
+        "gps_density": 0.968,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 111.6,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "17:00–22:00 (Sundays only)",
+        "overtourism_risk": "very_high",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.968,
+          18.7994
+        ]
+      },
+      "properties": {
+        "name": "Nimmanhaemin Road",
+        "name_en": "Nimmanhaemin Road",
+        "category": "Café & Dining District",
+        "description": "Chiang Mai's creative quarter lined with specialty-coffee cafés, art galleries, and boutiques. Strong draw for digital nomads and long-stay visitors.",
+        "gps_density": 0.9,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 132.0,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "10:00–13:00, 18:00–22:00",
+        "overtourism_risk": "medium",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.4867,
+          18.5897
+        ]
+      },
+      "properties": {
+        "name": "Doi Inthanon National Park",
+        "name_en": "Doi Inthanon National Park",
+        "category": "National Park",
+        "description": "Thailand's highest peak at 2,565 m. Twin royal pagodas, cloud-forest birding, and Mae Ya Waterfall make it the premier nature destination in Northern Thailand.",
+        "gps_density": 0.86,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 247.4,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "07:00–14:00",
+        "overtourism_risk": "medium",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9966,
+          18.7826
+        ]
+      },
+      "properties": {
+        "name": "Night Bazaar",
+        "name_en": "Chiang Mai Night Bazaar",
+        "category": "Market / Shopping",
+        "description": "Sprawling nightly market on Chang Khlan Road offering souvenirs, handicrafts, street food, and cultural shows. Operating since the 1960s as a major tourist draw.",
+        "gps_density": 0.912,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 87.0,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "18:00–23:00",
+        "overtourism_risk": "high",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9934,
+          18.7873
+        ]
+      },
+      "properties": {
+        "name": "Tha Phae Gate",
+        "name_en": "Tha Phae Gate",
+        "category": "Historic Gate / Landmark",
+        "description": "The eastern gate of Chiang Mai's old city moat, dating to 1296 AD. Central orientation point for old-city exploration and the focal node of Yi Peng lantern festival celebrations.",
+        "gps_density": 0.888,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 34.5,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "08:00–20:00",
+        "overtourism_risk": "medium",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9744,
+          18.7912
+        ]
+      },
+      "properties": {
+        "name": "Suan Dok Temple",
+        "name_en": "Wat Suan Dok",
+        "category": "Temple / Heritage",
+        "description": "14th-century temple housing a large collection of royal bone relics. White chedis against the sunset make it a favourite among photographers.",
+        "gps_density": 0.84,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 35.5,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "08:00–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.996,
+          18.7897
+        ]
+      },
+      "properties": {
+        "name": "Warorot Market",
+        "name_en": "Warorot Market (Kad Luang)",
+        "category": "Local Market",
+        "description": "Chiang Mai's oldest covered market, open since 1910. Three floors of fresh produce, northern Thai textiles, dried foods, and herbs attract locals and culinary tourists.",
+        "gps_density": 0.88,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 50.9,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "06:00–12:00",
+        "overtourism_risk": "medium",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9502,
+          18.8036
+        ]
+      },
+      "properties": {
+        "name": "Chiang Mai Zoo",
+        "name_en": "Chiang Mai Zoo",
+        "category": "Zoo / Family Attraction",
+        "description": "Hillside zoo home to giant pandas on loan from China, plus over 400 animal species. Cable car to Doi Suthep departs from the zoo grounds.",
+        "gps_density": 0.872,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 165.0,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "09:00–16:00",
+        "overtourism_risk": "medium",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9068,
+          18.7583
+        ]
+      },
+      "properties": {
+        "name": "Chiang Mai Night Safari",
+        "name_en": "Chiang Mai Night Safari",
+        "category": "Wildlife / Night Attraction",
+        "description": "Open-air wildlife park with electric tram tours after dark. Designed to offer close-range encounters with nocturnal animals in simulated natural habitats.",
+        "gps_density": 0.82,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 116.8,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "19:00–23:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.963,
+          18.7847
+        ]
+      },
+      "properties": {
+        "name": "Wat Umong",
+        "name_en": "Wat Umong (Forest Temple)",
+        "category": "Temple / Meditation",
+        "description": "Ancient forest temple founded in 1297 AD with underground meditation tunnels. A serene counterpoint to the busy old city; popular with meditation practitioners.",
+        "gps_density": 0.808,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 55.4,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "08:00–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9387,
+          18.8208
+        ]
+      },
+      "properties": {
+        "name": "Royal Flora Ratchaphruek",
+        "name_en": "Royal Flora Ratchaphruek Botanical Garden",
+        "category": "Botanical Garden",
+        "description": "Royal botanical garden developed for the 2006 International Horticultural Exposition. Features the Royal Pavilion and themed gardens representing all 77 Thai provinces.",
+        "gps_density": 0.84,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 149.3,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "09:00–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.943,
+          18.7639
+        ]
+      },
+      "properties": {
+        "name": "Wat Doi Kham",
+        "name_en": "Wat Phra That Doi Kham",
+        "category": "Temple / Heritage",
+        "description": "Hilltop temple revered for its large golden Naga and a 17-metre standing Buddha with panoramic views over southern Chiang Mai. Frequented mainly by local devotees.",
+        "gps_density": 0.78,
+        "crowd_level": "Medium Density",
+        "avg_dwell_minutes": 45.5,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "07:00–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9666,
+          18.8003
+        ]
+      },
+      "properties": {
+        "name": "Maya Lifestyle Shopping Center",
+        "name_en": "Maya Lifestyle Shopping Center",
+        "category": "Shopping Mall",
+        "description": "Contemporary lifestyle mall at the top of Nimman Road, anchored by international brands, a cinema multiplex, and a rooftop garden with mountain views.",
+        "gps_density": 0.88,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 90.6,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "11:00–21:00",
+        "overtourism_risk": "medium",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.8894,
+          18.8156
+        ]
+      },
+      "properties": {
+        "name": "Doi Pui Tribal Village",
+        "name_en": "Doi Pui Hmong Tribal Village",
+        "category": "Cultural / Ethnic Village",
+        "description": "Hmong hill-tribe community on the slopes of Doi Suthep, showcasing traditional crafts, costumes, and agricultural practices. Often combined with Doi Suthep temple visits.",
+        "gps_density": 0.82,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 83.4,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "09:00–16:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          99.1653,
+          18.8219
+        ]
+      },
+      "properties": {
+        "name": "Mae Kampong Village",
+        "name_en": "Ban Mae Kampong Eco-Village",
+        "category": "Eco-Tourism Village",
+        "description": "Charming mountain village celebrated for community-based eco-tourism, miang tea cultivation, and scenic waterfalls. A model of sustainable tourism development in Thailand.",
+        "gps_density": 0.792,
+        "crowd_level": "Medium Density",
+        "avg_dwell_minutes": 178.4,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "09:00–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9633,
+          18.7038
+        ]
+      },
+      "properties": {
+        "name": "Baan Tawai Crafts Village",
+        "name_en": "Baan Tawai Handicrafts Village",
+        "category": "Handicrafts Village",
+        "description": "Northern Thailand's premier wood-carving destination with hundreds of workshops producing teak furniture, lacquerware, and intricate decorative pieces exported worldwide.",
+        "gps_density": 0.832,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 97.5,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "09:00–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          99.1745,
+          18.7395
+        ]
+      },
+      "properties": {
+        "name": "San Kamphaeng Hot Springs",
+        "name_en": "San Kamphaeng Natural Hot Springs",
+        "category": "Natural Thermal Attraction",
+        "description": "Geothermal mineral springs 35 km east of Chiang Mai. The main geyser reaches 90°C; visitors enjoy private mineral-water pools for therapeutic soaking.",
+        "gps_density": 0.768,
+        "crowd_level": "Medium Density",
+        "avg_dwell_minutes": 141.0,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "08:00–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9547,
+          18.8019
+        ]
+      },
+      "properties": {
+        "name": "Ang Kaew Reservoir (CMU)",
+        "name_en": "Ang Kaew Reservoir — Chiang Mai University",
+        "category": "Park / Recreation",
+        "description": "Tranquil reservoir on the Chiang Mai University campus framed by forested hills. Popular morning jogging circuit and photography spot for mist over the water.",
+        "gps_density": 0.8,
+        "crowd_level": "Medium Density",
+        "avg_dwell_minutes": 47.9,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "06:00–09:00, 17:00–19:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9686,
+          18.7759
+        ]
+      },
+      "properties": {
+        "name": "Central Festival Chiang Mai",
+        "name_en": "Central Festival Chiang Mai (Airport Plaza)",
+        "category": "Shopping Mall",
+        "description": "Large retail complex adjacent to Chiang Mai International Airport, housing a department store, multiplex cinema, international food outlets, and a fresh market.",
+        "gps_density": 0.86,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 149.8,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "11:00–21:00",
+        "overtourism_risk": "medium",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9887,
+          18.7949
+        ]
+      },
+      "properties": {
+        "name": "Wat Chiang Man",
+        "name_en": "Wat Chiang Man",
+        "category": "Temple / Heritage",
+        "description": "Chiang Mai's oldest temple, founded in 1296 AD by King Mengrai as a temporary royal residence during the city's construction. Houses two highly revered ancient Buddha images.",
+        "gps_density": 0.82,
+        "crowd_level": "High Density",
+        "avg_dwell_minutes": 32.0,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "08:00–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          98.9891,
+          18.7879
+        ]
+      },
+      "properties": {
+        "name": "Chiang Mai City Arts and Cultural Centre",
+        "name_en": "Chiang Mai City Arts & Cultural Centre",
+        "category": "Museum / Cultural Centre",
+        "description": "Housed in a 1920s colonial building, this museum presents Lanna history from the foundation of Chiang Mai through to modern times via interactive multimedia exhibits.",
+        "gps_density": 0.76,
+        "crowd_level": "Medium Density",
+        "avg_dwell_minutes": 60.6,
+        "total_tracks": 5000,
+        "n_clusters": 1,
+        "peak_hours": "08:30–17:00",
+        "overtourism_risk": "low",
+        "gps_data_source": "CRW simulation",
+        "visit_advice": "Visit outside peak hours to avoid heavy crowds."
+      }
+    }
+  ],
+  "metadata": {
+    "project": "Agentic RAG for Smart Tourism — Chiang Mai",
+    "coordinate_system": "WGS84 (EPSG:4326)",
+    "bbox": {
+      "min_lat": 18.7,
+      "max_lat": 18.9,
+      "min_lon": 98.9,
+      "max_lon": 99.1
+    },
+    "data_source": "CRW simulation (OSM sparse)",
+    "clustering": "DBSCAN ε=0.002°, min_samples=5",
+    "speed_filter": "<0.000374 deg/s (~150 km/h)",
+    "total_pois": 24,
+    "note": "GPS density computed as 0.6×cluster_ratio + 0.4×base_density. Dwell time from within-cluster point distribution."
+  }
+}

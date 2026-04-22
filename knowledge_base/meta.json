@@ -1,0 +1,10 @@
+{
+  "project": "Agentic RAG for Smart Tourism \u2014 Chiang Mai",
+  "embed_dim": 384,
+  "model": "paraphrase-multilingual-MiniLM-L12-v2",
+  "embed_label": "paraphrase-multilingual-MiniLM-L12-v2",
+  "n_chunks": 723,
+  "chunk_chars": 800,
+  "overlap_chars": 200,
+  "index_type": "FAISS IndexFlatIP (cosine similarity)"
+}

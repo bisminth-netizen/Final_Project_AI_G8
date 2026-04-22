@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agentic_rag_chiangmai
+    ports:
+      - "8501:8501"
+    # API keys and secrets — never bake into the image; load from .env at runtime
+    env_file:
+      - .env
+    volumes:
+      # Persist pipeline outputs across container restarts
+      - ./data:/app/data
+      - ./knowledge_base:/app/knowledge_base
+      - ./picture:/app/picture
+      # Mount POI config so it can be updated without rebuilding the image
+      - ./config_pois.json:/app/config_pois.json:ro
+      # Cache HuggingFace model downloads
+      # paraphrase-multilingual-MiniLM-L12-v2 (~275 MB) + sentiment model (~1 GB)
+      - huggingface_cache:/root/.cache/huggingface
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 120s
+      retries: 3
+
+volumes:
+  huggingface_cache:
+    # Named volume so model weights survive `docker compose down` (not --volumes)
+    # Stores:
+    #   · paraphrase-multilingual-MiniLM-L12-v2  (~275 MB) — step3_rag.py + app.py
+    #   · cardiffnlp/twitter-xlm-roberta-base-sentiment (~1 GB) — step1_youtube.py (optional)
